@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Super Bounce: 100% Realtime Couple 🏀❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    #game-container {
+      position: relative;
+      width: 430px;
+      height: 740px;
+      border-radius: 36px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.12);
+      overflow: hidden;
+      background: #020617;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Top HUD */
+    .hud-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .hud-pill {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 6px 14px;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    /* Screen Overlays */
+    .screen-overlay {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 22px;
+      z-index: 10;
+    }
+
+    .title-banner {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+      background: linear-gradient(135deg, #ffffff 0%, #feca57 50%, #ff7675 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 6px 20px rgba(254, 202, 87, 0.4));
+    }
+
+    .action-btn {
+      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      border: none;
+      color: white;
+      font-size: 16px;
+      font-weight: 800;
+      padding: 12px 36px;
+      border-radius: 28px;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
+      transition: transform 0.15s ease;
+    }
+    .action-btn:active {
+      transform: scale(0.96);
+    }
+
+    /* Room Settings */
+    .room-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+    .room-input {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 14px;
+      padding: 6px 12px;
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: 800;
+      outline: none;
+      width: 140px;
+      text-align: center;
+    }
+
+    /* Leaderboard */
+    .leaderboard-card {
+      width: 100%;
+      max-width: 350px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 22px;
+      padding: 12px;
+      margin-bottom: 14px;
+    }
+    .leaderboard-title {
+      font-size: 12px;
+      font-weight: 800;
+      color: #feca57;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .rank-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #f1f5f9;
+      border: 1px solid transparent;
+      transition: all 0.3s;
+    }
+    .rank-row.top-1 {
+      border-color: rgba(254, 202, 87, 0.4);
+      background: rgba(254, 202, 87, 0.08);
+    }
+
+    .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+
+    .hide { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <div id="game-container">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Top Floating HUD -->
+    <div class="hud-layer">
+      <div class="hud-pill">
+        <span id="hudPlayerBadge" style="color: #ff7675;">Player</span>
+        <span id="hudAltitude" style="margin-left:4px; font-size:16px; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">0 m</span>
+      </div>
+      <div class="hud-pill" style="border-color: rgba(254, 202, 87, 0.3);">
+        <span style="font-size: 15px;">⭐</span>
+        <span id="hudStars" style="color: #feca57;">0</span>
+      </div>
+    </div>
+
+    <!-- START SCREEN -->
+    <div id="screenStart" class="screen-overlay">
+      <div style="font-size: 36px; margin-bottom: 2px;">❤️🏀❤️</div>
+      <h1 class="title-banner">COUPLE REALTIME</h1>
+      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">Skor langsung sinkron detik itu juga antar HP!</p>
+
+      <!-- Kode Pasangan (Room ID) -->
+      <div class="room-box">
+        <span style="font-size: 12px; color: #cbd5e1; font-weight: 800;">KODE KITA:</span>
+        <input type="text" id="roomInput" class="room-input" value="KITA2026" maxlength="10">
+        <button onclick="changeRoom()" style="background:none; border:1px solid #38bdf8; color:#38bdf8; border-radius:10px; padding:5px 8px; font-size:11px; font-weight:800; cursor:pointer;">Hubungkan</button>
+      </div>
+
+      <!-- Leaderboard Realtime Card -->
+      <div class="leaderboard-card">
+        <div class="leaderboard-title">
+          <span>🏆 Papan Skor Bersama</span>
+          <span style="display:flex; align-items:center; gap:4px; font-size:10px; color:#22c55e;">
+            <span class="live-dot"></span> LIVE CLOUD
+          </span>
+        </div>
+        <div id="rankList"></div>
+      </div>
+
+      <!-- Pilih Siapa yang Memegang HP ini -->
+      <div style="font-size: 12px; color: #cbd5e1; font-weight: 800; margin-bottom: 6px;">HP INI MILIK:</div>
+      <div style="display:flex; gap:10px; margin-bottom: 16px;">
+        <button id="btnRoleP1" class="action-btn" style="padding:8px 18px; font-size:13px;" onclick="setMyRole('p1')">👑 Aku</button>
+        <button id="btnRoleP2" class="action-btn" style="padding:8px 18px; font-size:13px; opacity:0.5;" onclick="setMyRole('p2')">💖 Pacarku</button>
+      </div>
+
+      <button id="btnStart" class="action-btn">Mulai Meluncur 🚀</button>
+    </div>
+
+    <!-- GAME OVER SCREEN -->
+    <div id="screenGameOver" class="screen-overlay hide">
+      <div style="font-size: 38px; margin-bottom: 4px;">🌠</div>
+      <h1 class="title-banner" style="background: linear-gradient(135deg, #ff7675, #fab1a0); -webkit-background-clip: text;">RONDE SELESAI</h1>
+      <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">
+        Ketinggian: 0 m
+      </p>
+
+      <div class="leaderboard-card">
+        <div class="leaderboard-title">
+          <span>🏆 Peringkat Terkini</span>
+          <span style="display:flex; align-items:center; gap:4px; font-size:10px; color:#22c55e;">
+            <span class="live-dot"></span> TERSINKRON
+          </span>
+        </div>
+        <div id="rankListGameOver"></div>
+      </div>
+
+      <button id="btnRestart" class="action-btn" style="margin-top: 10px;">Lompat Lagi 🔁</button>
+    </div>
+  </div>
+
+  <script>
+    /* ================= HD CANVAS ================= */
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const LOGICAL_WIDTH = 430;
+    const LOGICAL_HEIGHT = 740;
+
+    function resizeCanvasHD() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
+      canvas.width = LOGICAL_WIDTH * dpr;
+      canvas.height = LOGICAL_HEIGHT * dpr;
+      ctx.scale(dpr, dpr);
+    }
+    resizeCanvasHD();
+
+    /* ================= AUDIO ENGINE ================= */
+    let audioCtx = null;
+    function initAudioEngine() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    const Sfx = {
+      playTone(freqStart, freqEnd, type = 'sine', duration = 0.12, vol = 0.3) {
+        if (!audioCtx) return;
+        try {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freqStart, audioCtx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(freqEnd, audioCtx.currentTime + duration);
+          gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(audioCtx.currentTime + duration);
+        } catch(e) {}
+      },
+      bounce() { this.playTone(220, 560, 'sine', 0.14, 0.35); },
+      spring() { this.playTone(280, 1100, 'triangle', 0.3, 0.45); },
+      star() { this.playTone(900, 1500, 'sine', 0.15, 0.3); },
+      fall() { this.playTone(400, 60, 'sawtooth', 0.5, 0.3); }
+    };
+
+    /* ================= SISTEM DATABASE REALTIME (FIREBASE OPEN CLOUD) ================= */
+    // Database Cloud Publik (REST API) - sinkron antar HP mana pun di seluruh dunia
+    const FIREBASE_BASE_URL = "https://superbounce-couple-default-rtdb.firebaseio.com/couples/";
+
+    let currentRoom = localStorage.getItem('bounce_room_id') || 'KITA2026';
+    document.getElementById('roomInput').value = currentRoom;
+
+    let myRole = localStorage.getItem('bounce_my_role') || 'p1'; // 'p1' = Aku, 'p2' = Pacarku
+
+    let coupleScores = {
+      p1: { name: 'Aku', avatar: '👑', score: 0 },
+      p2: { name: 'Pacarku', avatar: '💖', score: 0 }
+    };
+
+    function changeRoom() {
+      const val = document.getElementById('roomInput').value.trim().toUpperCase() || 'KITA2026';
+      currentRoom = val;
+      localStorage.setItem('bounce_room_id', currentRoom);
+      fetchRealtimeScore();
+    }
+
+    function setMyRole(role) {
+      myRole = role;
+      localStorage.setItem('bounce_my_role', role);
+      document.getElementById('btnRoleP1').style.opacity = role === 'p1' ? '1' : '0.5';
+      document.getElementById('btnRoleP2').style.opacity = role === 'p2' ? '1' : '0.5';
+      updateLeaderboardUI();
+    }
+
+    // 1. Tarik data dari Cloud
+    async function fetchRealtimeScore() {
+      try {
+        const res = await fetch(`${FIREBASE_BASE_URL}${currentRoom}.json`);
+        const data = await res.json();
+        if (data) {
+          if (data.p1) coupleScores.p1 = data.p1;
+          if (data.p2) coupleScores.p2 = data.p2;
+          updateLeaderboardUI();
+        } else {
+          // Jika room baru, inisialisasi ke server
+          uploadScoreToCloud(0);
+        }
+      } catch(err) {
+        console.log("Offline mode, using cached data");
+      }
+    }
+
+    // 2. Kirim skor baru ke Cloud secara instan
+    async function uploadScoreToCloud(score) {
+      if (score > coupleScores[myRole].score) {
+        coupleScores[myRole].score = score;
+      }
+      try {
+        await fetch(`${FIREBASE_BASE_URL}${currentRoom}/${myRole}.json`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(coupleScores[myRole])
+        });
+        updateLeaderboardUI();
+      } catch(err) {}
+    }
+
+    // Polling Real-time: Cek data dari HP pacar otomatis setiap 3 detik
+    setInterval(fetchRealtimeScore, 3000);
+    fetchRealtimeScore();
+
+    function updateLeaderboardUI() {
+      const players = [
+        { id: 'p1', ...coupleScores.p1 },
+        { id: 'p2', ...coupleScores.p2 }
+      ].sort((a, b) => b.score - a.score);
+
+      const renderRows = (containerId) => {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        players.forEach((p, idx) => {
+          const isWinner = idx === 0 && p.score > 0;
+          const isMe = p.id === myRole;
+          const row = document.createElement('div');
+          row.className = `rank-row ${isWinner ? 'top-1' : ''}`;
+          row.innerHTML = `
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span>${idx === 0 ? '🥇' : '🥈'}</span>
+              <span>${p.avatar}</span>
+              <span>${p.name} ${isMe ? '<span style="font-size:10px;color:#38bdf8;">(Kamu)</span>' : ''}</span>
+            </div>
+            <div style="color:${isWinner ? '#feca57' : '#94a3b8'};">
+              ${p.score} m
+            </div>
+          `;
+          container.appendChild(row);
+        });
+      };
+
+      renderRows('rankList');
+      renderRows('rankListGameOver');
+      document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
+    }
+
+    setMyRole(myRole);
+
+    /* ================= GAMEPLAY CORE ================= */
+    let isPlaying = false;
+    let altitude = 0;
+    let stars = 0;
+    let cameraY = 0;
+    let speedMult = 1.0;
+
+    const ball = {
+      x: LOGICAL_WIDTH / 2,
+      y: LOGICAL_HEIGHT - 160,
+      radius: 17,
+      vx: 0,
+      vy: 0,
+      baseGravity: 0.17,
+      baseBounce: -11.6,
+      squishX: 1,
+      squishY: 1
+    };
+
+    let platforms = [];
+    let bgStars = [];
+
+    for (let i = 0; i < 40; i++) {
+      bgStars.push({
+        x: Math.random() * LOGICAL_WIDTH,
+        y: Math.random() * LOGICAL_HEIGHT,
+        size: Math.random() * 2 + 0.8
+      });
+    }
+
+    const keys = { left: false, right: false };
+    window.addEventListener('keydown', e => {
+      if (['ArrowLeft', 'a', 'A'].includes(e.key)) keys.left = true;
+      if (['ArrowRight', 'd', 'D'].includes(e.key)) keys.right = true;
+    });
+    window.addEventListener('keyup', e => {
+      if (['ArrowLeft', 'a', 'A'].includes(e.key)) keys.left = false;
+      if (['ArrowRight', 'd', 'D'].includes(e.key)) keys.right = false;
+    });
+
+    let touchX = null;
+    canvas.addEventListener('touchstart', e => { touchX = e.touches[0].clientX; }, { passive: true });
+    canvas.addEventListener('touchmove', e => {
+      if (touchX === null) return;
+      const deltaX = e.touches[0].clientX - touchX;
+      ball.vx = deltaX * 0.15;
+      touchX = e.touches[0].clientX;
+    }, { passive: true });
+    canvas.addEventListener('touchend', () => { touchX = null; ball.vx *= 0.6; });
+
+    function spawnPlatform(y, isFirst = false) {
+      platforms.push({
+        x: Math.random() * (LOGICAL_WIDTH - 92),
+        y: y,
+        w: 92,
+        h: 15,
+        type: !isFirst && Math.random() < 0.25 ? 'moving' : 'normal',
+        speed: (Math.random() < 0.5 ? 1 : -1) * 1.2,
+        hasSpring: !isFirst && Math.random() < 0.12,
+        hasStar: !isFirst && Math.random() < 0.3
+      });
+    }
+
+    function initGame() {
+      speedMult = 1.0;
+      ball.x = LOGICAL_WIDTH / 2;
+      ball.y = LOGICAL_HEIGHT - 140;
+      ball.vx = 0;
+      ball.vy = ball.baseBounce;
+      altitude = 0;
+      stars = 0;
+      cameraY = 0;
+      platforms = [];
+
+      document.getElementById('hudAltitude').innerText = '0 m';
+      document.getElementById('hudStars').innerText = '0';
+      document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
+
+      spawnPlatform(LOGICAL_HEIGHT - 60, true);
+      for (let y = LOGICAL_HEIGHT - 140; y > -100; y -= 85) spawnPlatform(y);
+    }
+
+    function startGame() {
+      initAudioEngine();
+      document.getElementById('screenStart').classList.add('hide');
+      document.getElementById('screenGameOver').classList.add('hide');
+      initGame();
+      isPlaying = true;
+    }
+
+    async function gameOver() {
+      isPlaying = false;
+      Sfx.fall();
+
+      const finalAlt = Math.floor(altitude);
+      const isNew = finalAlt > coupleScores[myRole].score;
+
+      // Upload langsung ke cloud detik itu juga
+      if (isNew) {
+        uploadScoreToCloud(finalAlt);
+      }
+
+      document.getElementById('statsText').innerHTML = `
+        Ketinggian Kamu: <span style="color:#fff;font-weight:800;">${finalAlt} m</span>
+        ${isNew ? '<br><span style="color:#feca57;font-weight:900;">🎉 REKOR BARU TERSINKRON! 🎉</span>' : ''}
+      `;
+
+      document.getElementById('screenGameOver').classList.remove('hide');
+    }
+
+    document.getElementById('btnStart').addEventListener('click', startGame);
+    document.getElementById('btnRestart').addEventListener('click', startGame);
+
+    function update() {
+      if (!isPlaying) return;
+
+      speedMult = 1.0 + Math.min(1.0, altitude / 450);
+      const currentGravity = ball.baseGravity * (speedMult * 0.9);
+      const currentBounce = ball.baseBounce * (speedMult * 0.95);
+      const moveSpeed = 4.6 * speedMult;
+
+      if (keys.left) ball.vx = -moveSpeed;
+      else if (keys.right) ball.vx = moveSpeed;
+      else ball.vx *= 0.88;
+
+      ball.vy += currentGravity;
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      if (ball.x < -ball.radius) ball.x = LOGICAL_WIDTH + ball.radius;
+      if (ball.x > LOGICAL_WIDTH + ball.radius) ball.x = -ball.radius;
+
+      ball.squishX += (1 - ball.squishX) * 0.14;
+      ball.squishY += (1 - ball.squishY) * 0.14;
+
+      if (ball.vy > 0) {
+        platforms.forEach(p => {
+          if (
+            ball.x + ball.radius * 0.5 >= p.x &&
+            ball.x - ball.radius * 0.5 <= p.x + p.w &&
+            ball.y + ball.radius >= p.y &&
+            ball.y - ball.radius * 0.5 <= p.y + p.h
+          ) {
+            if (p.hasSpring && Math.abs(ball.x - (p.x + p.w / 2)) < 22) {
+              ball.vy = currentBounce * 1.78;
+              Sfx.spring();
+            } else {
+              ball.vy = currentBounce;
+              Sfx.bounce();
+            }
+          }
+        });
+      }
+
+      platforms.forEach(p => {
+        if (p.hasStar) {
+          const starX = p.x + p.w / 2;
+          const starY = p.y - 24;
+          if (Math.hypot(ball.x - starX, ball.y - starY) < ball.radius + 14) {
+            p.hasStar = false;
+            stars++;
+            Sfx.star();
+            document.getElementById('hudStars').innerText = stars;
+          }
+        }
+        if (p.type === 'moving') {
+          p.x += p.speed;
+          if (p.x <= 4 || p.x + p.w >= LOGICAL_WIDTH - 4) p.speed *= -1;
+        }
+      });
+
+      if (ball.y < LOGICAL_HEIGHT * 0.42) {
+        const diff = (LOGICAL_HEIGHT * 0.42) - ball.y;
+        ball.y = LOGICAL_HEIGHT * 0.42;
+        cameraY += diff;
+        altitude = cameraY / 10;
+        document.getElementById('hudAltitude').innerText = `${Math.floor(altitude)} m`;
+
+        platforms.forEach(p => p.y += diff);
+        platforms = platforms.filter(p => p.y < LOGICAL_HEIGHT + 40);
+
+        while (platforms.length < 10) {
+          const highestY = Math.min(...platforms.map(p => p.y));
+          spawnPlatform(highestY - (70 + Math.random() * 25));
+        }
+      }
+
+      if (ball.y - ball.radius > LOGICAL_HEIGHT) gameOver();
+    }
+
+    function draw() {
+      ctx.fillStyle = '#0f172a';
+      ctx.fillRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
+
+      bgStars.forEach(s => {
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillRect(s.x, (s.y + cameraY * 0.15) % LOGICAL_HEIGHT, s.size, s.size);
+      });
+
+      platforms.forEach(p => {
+        ctx.fillStyle = p.type === 'moving' ? '#38bdf8' : '#34d399';
+        ctx.beginPath();
+        ctx.roundRect(p.x, p.y, p.w, p.h, 8);
+        ctx.fill();
+
+        if (p.hasSpring) {
+          ctx.fillStyle = '#feca57';
+          ctx.fillRect(p.x + p.w / 2 - 12, p.y - 8, 24, 8);
+        }
+        if (p.hasStar) {
+          ctx.font = '18px sans-serif';
+          ctx.fillText('⭐', p.x + p.w / 2 - 9, p.y - 8);
+        }
+      });
+
+      ctx.save();
+      ctx.translate(ball.x, ball.y);
+      ctx.scale(ball.squishX, ball.squishY);
+      ctx.fillStyle = myRole === 'p1' ? '#38bdf8' : '#ff758c';
+      ctx.beginPath();
+      ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Mata Bola
+      ctx.fillStyle = '#fff';
+      ctx.beginPath();
+      ctx.arc(-5, -3, 4, 0, Math.PI * 2);
+      ctx.arc(5, -3, 4, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.beginPath();
+      ctx.arc(-5, -3, 2, 0, Math.PI * 2);
+      ctx.arc(5, -3, 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      ctx.restore();
+
+      requestAnimationFrame(() => {
+        update();
+        draw();
+      });
+    }
+
+    draw();
+  </script>
+</body>
+</html>
