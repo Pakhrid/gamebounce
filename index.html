@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Super Bounce: Couple Realtime Tracker 🏀❤️</title>
+  <title>Super Bounce: 30 Skins & Permanent Save 🏀✨</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
@@ -44,7 +44,7 @@
       display: block;
     }
 
-    /* Top Floating HUD */
+    /* HUD */
     .hud-layer {
       position: absolute;
       top: 0;
@@ -106,16 +106,16 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 22px;
+      padding: 20px;
       z-index: 10;
     }
 
     .title-banner {
-      font-size: 30px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1.1;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       background: linear-gradient(135deg, #ffffff 0%, #feca57 50%, #ff7675 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -153,67 +153,92 @@
       align-items: center;
       gap: 6px;
     }
-    .share-btn:active {
-      transform: scale(0.96);
+
+    /* Toko 30 Skin Grid */
+    .wardrobe-modal {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 15, 29, 0.98);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 14px;
     }
 
-    /* Leaderboard */
+    .wardrobe-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 6px;
+    }
+
+    .skins-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding-bottom: 20px;
+    }
+
+    .skin-card {
+      aspect-ratio: 1;
+      border-radius: 16px;
+      cursor: pointer;
+      border: 2px solid transparent;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      position: relative;
+      transition: all 0.2s;
+    }
+    .skin-card.selected {
+      border-color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+    }
+    .skin-card.locked {
+      opacity: 0.45;
+      filter: grayscale(0.85);
+    }
+
+    .skin-cost-tag {
+      font-size: 9px;
+      font-weight: 900;
+      background: rgba(0, 0, 0, 0.65);
+      padding: 1px 5px;
+      border-radius: 6px;
+      margin-top: 2px;
+    }
+
+    /* Leaderboard Card */
     .leaderboard-card {
       width: 100%;
       max-width: 350px;
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 22px;
-      padding: 12px;
-      margin-bottom: 14px;
-    }
-    .leaderboard-title {
-      font-size: 12px;
-      font-weight: 800;
-      color: #feca57;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      border-radius: 20px;
+      padding: 10px 14px;
+      margin-bottom: 12px;
     }
     .rank-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: rgba(255, 255, 255, 0.03);
-      border-radius: 14px;
-      margin-bottom: 6px;
+      border-radius: 12px;
+      margin-bottom: 4px;
       font-size: 13px;
       font-weight: 800;
       color: #f1f5f9;
-      border: 1px solid transparent;
-      transition: all 0.3s;
     }
     .rank-row.top-1 {
-      border-color: rgba(254, 202, 87, 0.4);
+      border: 1px solid rgba(254, 202, 87, 0.4);
       background: rgba(254, 202, 87, 0.08);
-    }
-
-    .gap-badge {
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 14px;
-      padding: 8px 14px;
-      font-size: 13px;
-      font-weight: 800;
-      margin-bottom: 12px;
-      color: #cbd5e1;
-    }
-
-    .live-dot {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
-      border-radius: 50%;
-      box-shadow: 0 0 8px #22c55e;
     }
 
     .hide { display: none !important; }
@@ -237,7 +262,6 @@
         </div>
       </div>
 
-      <!-- Tracker Live Posisi Pacar -->
       <div id="targetTrackerHud" class="target-tracker-pill hide">
         <span id="targetTrackerText">💖 Pacarku: 0m</span>
       </div>
@@ -245,52 +269,63 @@
 
     <!-- START SCREEN -->
     <div id="screenStart" class="screen-overlay">
-      <div style="font-size: 34px; margin-bottom: 2px;">❤️🏀❤️</div>
-      <h1 class="title-banner">COUPLE BOUNCE</h1>
-      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">Adu rekor lompatan tertinggi bersama pacar!</p>
+      <div style="font-size: 32px; margin-bottom: 2px;">❤️🏀❤️</div>
+      <h1 class="title-banner">SUPER BOUNCE</h1>
+      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 10px;">30 Skin Koleksi & Sistem Simpan Otomatis!</p>
 
       <!-- Leaderboard Card -->
       <div class="leaderboard-card">
-        <div class="leaderboard-title">
-          <span>🏆 Papan Skor Pasangan</span>
-          <span style="display:flex; align-items:center; gap:4px; font-size:10px; color:#22c55e;">
-            <span class="live-dot"></span> SINKRON
-          </span>
+        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#feca57; margin-bottom:6px;">
+          <span>🏆 REKOR PASANGAN</span>
+          <span style="color:#22c55e;">🟢 AUTO-SAVE</span>
         </div>
         <div id="rankList"></div>
       </div>
 
-      <!-- Pilih Profil HP ini -->
-      <div style="font-size: 12px; color: #cbd5e1; font-weight: 800; margin-bottom: 6px;">HP INI MILIK:</div>
-      <div style="display:flex; gap:10px; margin-bottom: 16px;">
-        <button id="btnRoleP1" class="action-btn" style="padding:8px 18px; font-size:13px;" onclick="setMyRole('p1')">👑 Aku</button>
-        <button id="btnRoleP2" class="action-btn" style="padding:8px 18px; font-size:13px; opacity:0.5;" onclick="setMyRole('p2')">💖 Pacarku</button>
+      <!-- Pilih Profil HP -->
+      <div style="font-size: 11px; color: #cbd5e1; font-weight: 800; margin-bottom: 4px;">HP INI MILIK:</div>
+      <div style="display:flex; gap:10px; margin-bottom: 12px;">
+        <button id="btnRoleP1" class="action-btn" style="padding:6px 16px; font-size:12px;" onclick="setMyRole('p1')">👑 Aku</button>
+        <button id="btnRoleP2" class="action-btn" style="padding:6px 16px; font-size:12px; opacity:0.5;" onclick="setMyRole('p2')">💖 Pacarku</button>
       </div>
+
+      <!-- Tombol Toko Lemari Skin -->
+      <button class="action-btn" style="background:linear-gradient(135deg,#f59e0b,#ea580c); padding:8px 24px; font-size:13px; margin-bottom:12px;" onclick="openWardrobe()">
+        👗 Lemari 30 Skin (<span id="btnSkinCountText">1/30</span>)
+      </button>
 
       <button id="btnStart" class="action-btn">Mulai Meluncur 🚀</button>
     </div>
 
+    <!-- MODAL TOKO 30 SKIN -->
+    <div id="modalWardrobe" class="wardrobe-modal hide">
+      <div class="wardrobe-header">
+        <div>
+          <h2 style="font-size: 18px; color: #fff;">LEMARI SKIN BOLA</h2>
+          <span style="font-size: 12px; color: #feca57; font-weight:800;">⭐ Saldo Tersimpan: <span id="wardrobeStarBalance">0</span></span>
+        </div>
+        <button onclick="closeWardrobe()" style="background:#ef4444; border:none; color:#fff; border-radius:50%; width:30px; height:30px; font-weight:900; cursor:pointer;">✕</button>
+      </div>
+      <div class="skins-scroll-area" id="skinsGrid"></div>
+    </div>
+
     <!-- GAME OVER SCREEN -->
     <div id="screenGameOver" class="screen-overlay hide">
-      <div style="font-size: 38px; margin-bottom: 4px;">🌠</div>
+      <div style="font-size: 36px; margin-bottom: 4px;">🌠</div>
       <h1 class="title-banner" style="background: linear-gradient(135deg, #ff7675, #fab1a0); -webkit-background-clip: text;">RONDE SELESAI</h1>
       
       <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-bottom: 6px;">
         Ketinggian: 0 m
       </p>
 
-      <div id="gapBadge" class="gap-badge">Memeriksa rekor...</div>
+      <div id="gapBadge" style="background:rgba(255,255,255,0.08); border-radius:12px; padding:6px 12px; font-size:12px; font-weight:800; color:#cbd5e1; margin-bottom:10px;">Memeriksa rekor...</div>
 
       <div class="leaderboard-card">
-        <div class="leaderboard-title">
-          <span>🏆 Peringkat Terkini</span>
-        </div>
         <div id="rankListGameOver"></div>
       </div>
 
-      <!-- Tombol Kirim Skor ke Pacar -->
       <button class="share-btn" onclick="shareScoreToPartner()">
-        <span>📤 Kirim Hasil Skor ke Pacar</span>
+        <span>📤 Kirim Skor ke WA Pacar</span>
       </button>
 
       <button id="btnRestart" class="action-btn" style="margin-top: 10px;">Lompat Lagi 🔁</button>
@@ -312,51 +347,268 @@
     }
     resizeCanvasHD();
 
-    /* ================= AUDIO ENGINE ================= */
-    let audioCtx = null;
-    function initAudioEngine() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+    /* ================= 30 SKIN BOLA EKSKLUSIF ================= */
+    const SKINS_DATABASE = [
+      { id: 'classic', name: 'Cherry', symbol: '🌸', c1: '#fbcfe8', c2: '#f472b6', c3: '#db2777', aura: '#f472b6', sfx: 'pop', bgm: 'happy', cost: 0 },
+      { id: 'blueberry', name: 'Berry', symbol: '🫐', c1: '#bfdbfe', c2: '#60a5fa', c3: '#2563eb', aura: '#3b82f6', sfx: 'water', bgm: 'chill', cost: 25 },
+      { id: 'lime', name: 'Lime', symbol: '🍋', c1: '#fef08a', c2: '#a3e635', c3: '#65a30d', aura: '#84cc16', sfx: 'squish', bgm: 'arcade', cost: 50 },
+      { id: 'orange', name: 'Juicy', symbol: '🍊', c1: '#fed7aa', c2: '#fb923c', c3: '#ea580c', aura: '#f97316', sfx: 'pop', bgm: 'happy', cost: 75 },
+      { id: 'boba', name: 'Boba', symbol: '🧋', c1: '#d7ccc8', c2: '#a1887f', c3: '#5d4037', aura: '#8d6e63', sfx: 'squish', bgm: 'chill', cost: 100 },
+      { id: 'cookie', name: 'Cookie', symbol: '🍪', c1: '#fde68a', c2: '#d97706', c3: '#78350f', aura: '#b45309', sfx: 'pop', bgm: 'happy', cost: 130 },
+      { id: 'slime', name: 'Slime', symbol: '🟢', c1: '#bbf7d0', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: 'squish', bgm: 'chill', cost: 160 },
+      { id: 'bubblegum', name: 'Gum', symbol: '🍬', c1: '#f5d0fe', c2: '#e879f9', c3: '#a21caf', aura: '#c026d3', sfx: 'pop', bgm: 'happy', cost: 200 },
+      { id: 'electric', name: 'Volt', symbol: '⚡', c1: '#cffafe', c2: '#22d3ee', c3: '#0891b2', aura: '#06b6d4', sfx: 'laser', bgm: 'arcade', cost: 240 },
+      { id: 'flame', name: 'Blaze', symbol: '🔥', c1: '#ffedd5', c2: '#f97316', c3: '#b91c1c', aura: '#ef4444', sfx: 'laser', bgm: 'arcade', cost: 280 },
+      { id: 'frost', name: 'Frost', symbol: '❄️', c1: '#e0f2fe', c2: '#7dd3fc', c3: '#0284c7', aura: '#38bdf8', sfx: 'bell', bgm: 'cosmic', cost: 320 },
+      { id: 'plasma', name: 'Plasma', symbol: '🟣', c1: '#ede9fe', c2: '#a855f7', c3: '#6b21a8', aura: '#9333ea', sfx: 'laser', bgm: 'cosmic', cost: 360 },
+      { id: 'ocean', name: 'Aqua', symbol: '🌊', c1: '#ccfbf1', c2: '#2dd4bf', c3: '#0f766e', aura: '#14b8a6', sfx: 'water', bgm: 'chill', cost: 400 },
+      { id: 'sun', name: 'Solar', symbol: '☀️', c1: '#fef08a', c2: '#eab308', c3: '#a16207', aura: '#ca8a04', sfx: 'bell', bgm: 'happy', cost: 450 },
+      { id: 'moon', name: 'Lunar', symbol: '🌙', c1: '#f1f5f9', c2: '#cbd5e1', c3: '#475569', aura: '#94a3b8', sfx: 'bell', bgm: 'cosmic', cost: 500 },
+      { id: 'clover', name: 'Lucky', symbol: '🍀', c1: '#dcfce7', c2: '#22c55e', c3: '#14532d', aura: '#16a34a', sfx: 'bell', bgm: 'happy', cost: 550 },
+      { id: 'gem_ruby', name: 'Ruby', symbol: '💎', c1: '#ffe4e6', c2: '#f43f5e', c3: '#881337', aura: '#e11d48', sfx: 'bell', bgm: 'cosmic', cost: 600 },
+      { id: 'gem_sapphire', name: 'Sapphire', symbol: '💠', c1: '#e0e7ff', c2: '#6366f1', c3: '#312e81', aura: '#4f46e5', sfx: 'bell', bgm: 'cosmic', cost: 650 },
+      { id: 'gem_emerald', name: 'Emerald', symbol: '❇️', c1: '#d1fae5', c2: '#10b981', c3: '#064e3b', aura: '#059669', sfx: 'bell', bgm: 'cosmic', cost: 700 },
+      { id: 'gold', name: 'Midas', symbol: '👑', c1: '#fef9c3', c2: '#facc15', c3: '#854d0e', aura: '#eab308', sfx: 'bell', bgm: 'arcade', cost: 750 },
+      { id: 'heart', name: 'Cupid', symbol: '💖', c1: '#ffe4e6', c2: '#fb7185', c3: '#be123c', aura: '#f43f5e', sfx: 'pop', bgm: 'happy', cost: 800 },
+      { id: 'cyber', name: 'Matrix', symbol: '🛸', c1: '#dcfce7', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: '8bit', bgm: 'arcade', cost: 850 },
+      { id: 'synthwave', name: 'Retro', symbol: '🌆', c1: '#fae8ff', c2: '#d946ef', c3: '#701a75', aura: '#c026d3', sfx: '8bit', bgm: 'arcade', cost: 900 },
+      { id: 'galaxy', name: 'Nebula', symbol: '🌌', c1: '#ede9fe', c2: '#8b5cf6', c3: '#4c1d95', aura: '#7c3aed', sfx: 'cosmic', bgm: 'cosmic', cost: 950 },
+      { id: 'supernova', name: 'Nova', symbol: '💥', c1: '#ffedd5', c2: '#fb923c', c3: '#7c2d12', aura: '#ea580c', sfx: 'laser', bgm: 'arcade', cost: 1000 },
+      { id: 'void', name: 'Abyss', symbol: '⚫', c1: '#64748b', c2: '#334155', c3: '#020617', aura: '#475569', sfx: 'cosmic', bgm: 'cosmic', cost: 1100 },
+      { id: 'angel', name: 'Seraph', symbol: '🪽', c1: '#ffffff', c2: '#fef08a', c3: '#e2e8f0', aura: '#fef9c3', sfx: 'bell', bgm: 'happy', cost: 1200 },
+      { id: 'demon', name: 'Inferno', symbol: '😈', c1: '#fee2e2', c2: '#ef4444', c3: '#450a0a', aura: '#dc2626', sfx: 'laser', bgm: 'arcade', cost: 1300 },
+      { id: 'rainbow', name: 'Prism', symbol: '🌈', c1: '#fbcfe8', c2: '#38bdf8', c3: '#facc15', aura: '#ffffff', sfx: 'bell', bgm: 'happy', cost: 1500 },
+      { id: 'stellar', name: 'Ascended', symbol: '✨', c1: '#ffffff', c2: '#e0e7ff', c3: '#fde047', aura: '#facc15', sfx: 'cosmic', bgm: 'cosmic', cost: 2000 }
+    ];
+
+    /* ================= BRANKAS PENYIMPANAN PERMANEN (AUTO-SAVE) ================= */
+    let totalStarsStored = parseInt(localStorage.getItem('bounce_star_bank_permanent') || '0');
+    let currentSkinId = localStorage.getItem('bounce_equipped_skin_permanent') || 'classic';
+    let unlockedSkins = JSON.parse(localStorage.getItem('bounce_unlocked_list_permanent') || '["classic"]');
+
+    // Fungsi otomatis simpan ke memori HP detik itu juga
+    function saveStarsPermanently() {
+      localStorage.setItem('bounce_star_bank_permanent', totalStarsStored.toString());
     }
 
-    const Sfx = {
-      playTone(freqStart, freqEnd, type = 'sine', duration = 0.12, vol = 0.3) {
-        if (!audioCtx) return;
-        try {
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = type;
-          osc.frequency.setValueAtTime(freqStart, audioCtx.currentTime);
-          osc.frequency.exponentialRampToValueAtTime(freqEnd, audioCtx.currentTime + duration);
-          gain.gain.setValueAtTime(vol, audioCtx.currentTime);
-          gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start();
-          osc.stop(audioCtx.currentTime + duration);
-        } catch(e) {}
+    function saveSkinsPermanently() {
+      localStorage.setItem('bounce_equipped_skin_permanent', currentSkinId);
+      localStorage.setItem('bounce_unlocked_list_permanent', JSON.stringify(unlockedSkins));
+    }
+
+    function updateWardrobeUI() {
+      document.getElementById('wardrobeStarBalance').innerText = totalStarsStored;
+      document.getElementById('hudStars').innerText = totalStarsStored;
+      document.getElementById('btnSkinCountText').innerText = `${unlockedSkins.length}/30`;
+
+      const grid = document.getElementById('skinsGrid');
+      grid.innerHTML = '';
+
+      SKINS_DATABASE.forEach(s => {
+        const isUnlocked = unlockedSkins.includes(s.id);
+        const isSelected = s.id === currentSkinId;
+        const card = document.createElement('div');
+        card.className = `skin-card ${isSelected ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
+        card.style.background = `linear-gradient(135deg, ${s.c1}, ${s.c3})`;
+
+        card.innerHTML = `
+          <span style="font-size: 16px;">${s.symbol}</span>
+          ${!isUnlocked ? `<span class="skin-cost-tag">⭐${s.cost}</span>` : ''}
+        `;
+
+        card.onclick = () => {
+          if (isUnlocked) {
+            currentSkinId = s.id;
+            saveSkinsPermanently();
+            SoundEngine.switchSkinBgm(s.bgm);
+            updateWardrobeUI();
+          } else if (totalStarsStored >= s.cost) {
+            totalStarsStored -= s.cost;
+            saveStarsPermanently();
+            unlockedSkins.push(s.id);
+            currentSkinId = s.id;
+            saveSkinsPermanently();
+            SoundEngine.switchSkinBgm(s.bgm);
+            updateWardrobeUI();
+          }
+        };
+        grid.appendChild(card);
+      });
+    }
+
+    function openWardrobe() {
+      document.getElementById('modalWardrobe').classList.remove('hide');
+      updateWardrobeUI();
+    }
+    function closeWardrobe() {
+      document.getElementById('modalWardrobe').classList.add('hide');
+    }
+
+    /* ================= SYNTHESIZER AUDIO DENGAN VARIASI TIAP SKIN ================= */
+    let audioCtx = null;
+    let bgmTimer = null;
+
+    const SoundEngine = {
+      init() {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+        this.startBgm();
       },
-      bounce() { this.playTone(220, 560, 'sine', 0.14, 0.35); },
-      spring() { this.playTone(280, 1100, 'triangle', 0.3, 0.45); },
-      star() { this.playTone(900, 1500, 'sine', 0.15, 0.3); },
+
+      playBounceBySkin(sfxType) {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        if (sfxType === 'pop') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(240, now);
+          osc.frequency.exponentialRampToValueAtTime(580, now + 0.12);
+        } else if (sfxType === 'squish') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(140, now);
+          osc.frequency.exponentialRampToValueAtTime(320, now + 0.15);
+        } else if (sfxType === 'laser') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(600, now);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.14);
+        } else if (sfxType === 'bell') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(880, now);
+          osc.frequency.exponentialRampToValueAtTime(440, now + 0.22);
+        } else if (sfxType === '8bit') {
+          osc.type = 'square';
+          osc.frequency.setValueAtTime(220, now);
+          osc.frequency.setValueAtTime(440, now + 0.05);
+          osc.frequency.setValueAtTime(880, now + 0.1);
+        } else if (sfxType === 'water') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(300, now);
+          osc.frequency.exponentialRampToValueAtTime(600, now + 0.08);
+          osc.frequency.exponentialRampToValueAtTime(350, now + 0.16);
+        } else {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(350, now);
+          osc.frequency.exponentialRampToValueAtTime(1050, now + 0.2);
+        }
+
+        gain.gain.setValueAtTime(0.35, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + 0.18);
+      },
+
+      spring() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(1100, now + 0.3);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + 0.3);
+      },
+
+      star() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(950, now);
+        osc.frequency.setValueAtTime(1450, now + 0.08);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + 0.16);
+      },
+
       overtake() {
         if (!audioCtx) return;
         [523, 659, 783, 1046].forEach((f, i) => {
-          setTimeout(() => this.playTone(f, f + 50, 'triangle', 0.2, 0.4), i * 100);
+          setTimeout(() => {
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.value = f;
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(now + 0.2);
+          }, i * 90);
         });
       },
-      fall() { this.playTone(400, 60, 'sawtooth', 0.5, 0.3); }
+
+      fall() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(380, now);
+        osc.frequency.exponentialRampToValueAtTime(60, now + 0.45);
+        gain.gain.setValueAtTime(0.4, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(now + 0.45);
+      },
+
+      startBgm() {
+        if (bgmTimer) clearInterval(bgmTimer);
+        const curSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
+        this.switchSkinBgm(curSkin.bgm);
+      },
+
+      switchSkinBgm(theme) {
+        if (!audioCtx) return;
+        if (bgmTimer) clearInterval(bgmTimer);
+
+        let notes = [261.63, 329.63, 392.00, 523.25];
+        if (theme === 'chill') notes = [220.00, 261.63, 329.63, 440.00];
+        if (theme === 'arcade') notes = [196.00, 293.66, 392.00, 587.33];
+        if (theme === 'cosmic') notes = [174.61, 220.00, 329.63, 493.88];
+
+        let step = 0;
+        bgmTimer = setInterval(() => {
+          if (!isPlaying) return;
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = theme === 'arcade' ? 'square' : 'sine';
+          osc.frequency.value = notes[step % notes.length];
+          gain.gain.setValueAtTime(0.035, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start();
+          osc.stop(now + 0.35);
+          step++;
+        }, 400);
+      }
     };
 
-    /* ================= SISTEM DATA PASANGAN & SINKRONISASI ================= */
+    /* ================= SINKRONISASI PASANGAN ================= */
     let myRole = localStorage.getItem('bounce_my_role_v3') || 'p1';
-
     let coupleScores = JSON.parse(localStorage.getItem('couple_scores_v3') || JSON.stringify({
       p1: { name: 'Aku', avatar: '👑', score: 0 },
       p2: { name: 'Pacarku', avatar: '💖', score: 0 }
     }));
 
-    // BACA PARAMETER LINK URL (Jika pacar membuka tautan hasil kiriman skor)
     const urlParams = new URLSearchParams(window.location.search);
     const fromRole = urlParams.get('role');
     const fromScore = parseInt(urlParams.get('score'));
@@ -366,10 +618,7 @@
         coupleScores[fromRole].score = fromScore;
         localStorage.setItem('couple_scores_v3', JSON.stringify(coupleScores));
       }
-      // Jika pacar yang membuka, set otomatis rolenya
-      if (fromRole === 'p1' && !localStorage.getItem('bounce_my_role_v3')) {
-        myRole = 'p2';
-      }
+      if (fromRole === 'p1' && !localStorage.getItem('bounce_my_role_v3')) myRole = 'p2';
     }
 
     function setMyRole(role) {
@@ -416,21 +665,23 @@
     function shareScoreToPartner() {
       const baseUrl = window.location.origin + window.location.pathname;
       const shareUrl = `${baseUrl}?role=${myRole}&score=${coupleScores[myRole].score}`;
-      const partnerName = myRole === 'p1' ? coupleScores.p2.name : coupleScores.p1.name;
-      const textMsg = encodeURIComponent(`Sayang! Rekor lompatanku sekarang ${coupleScores[myRole].score}m 🚀 Ayo klik link ini buat kalahin rekor aku:\n${shareUrl}`);
-      
+      const textMsg = encodeURIComponent(`Sayang! Rekor lompatanku sekarang ${coupleScores[myRole].score}m 🚀 Ayo buka link ini buat kalahin rekor aku:\n${shareUrl}`);
       window.open(`https://wa.me/?text=${textMsg}`, '_blank');
     }
 
     setMyRole(myRole);
+    updateWardrobeUI();
 
     /* ================= GAMEPLAY CORE ================= */
     let isPlaying = false;
     let altitude = 0;
-    let stars = 0;
+    let sessionStars = 0;
     let cameraY = 0;
     let speedMult = 1.0;
     let hasOvertakenPartner = false;
+
+    let hasShield = false;
+    let hasSafetyNet = true;
 
     const ball = {
       x: LOGICAL_WIDTH / 2,
@@ -441,7 +692,10 @@
       baseGravity: 0.17,
       baseBounce: -11.6,
       squishX: 1,
-      squishY: 1
+      squishY: 1,
+      rocketTimer: 0,
+      magnetTimer: 0,
+      trail: []
     };
 
     let platforms = [];
@@ -486,7 +740,10 @@
         type: !isFirst && Math.random() < 0.25 ? 'moving' : 'normal',
         speed: (Math.random() < 0.5 ? 1 : -1) * 1.2,
         hasSpring: !isFirst && Math.random() < 0.12,
-        hasStar: !isFirst && Math.random() < 0.3
+        hasRocket: !isFirst && Math.random() < 0.04,
+        hasMagnet: !isFirst && Math.random() < 0.04,
+        hasShield: !isFirst && Math.random() < 0.04,
+        hasStar: !isFirst && Math.random() < 0.18
       });
     }
 
@@ -497,19 +754,26 @@
     function initGame() {
       speedMult = 1.0;
       hasOvertakenPartner = false;
+      hasShield = false;
+      hasSafetyNet = true;
+
       ball.x = LOGICAL_WIDTH / 2;
       ball.y = LOGICAL_HEIGHT - 140;
       ball.vx = 0;
       ball.vy = ball.baseBounce;
+      ball.rocketTimer = 0;
+      ball.magnetTimer = 0;
+      ball.trail = [];
+
       altitude = 0;
-      stars = 0;
+      sessionStars = 0;
       cameraY = 0;
       platforms = [];
       particles = [];
       floatTexts = [];
 
       document.getElementById('hudAltitude').innerText = '0 m';
-      document.getElementById('hudStars').innerText = '0';
+      document.getElementById('hudStars').innerText = totalStarsStored;
       document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
 
       const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
@@ -527,7 +791,7 @@
     }
 
     function startGame() {
-      initAudioEngine();
+      SoundEngine.init();
       document.getElementById('screenStart').classList.add('hide');
       document.getElementById('screenGameOver').classList.add('hide');
       initGame();
@@ -536,7 +800,10 @@
 
     function gameOver() {
       isPlaying = false;
-      Sfx.fall();
+      SoundEngine.fall();
+
+      // SIMPAN PERMANEN DETIK INI JUGA!
+      saveStarsPermanently();
 
       const finalAlt = Math.floor(altitude);
       const isNew = finalAlt > coupleScores[myRole].score;
@@ -561,7 +828,9 @@
       }
 
       document.getElementById('statsText').innerHTML = `
-        Ketinggian Kamu: <span style="color:#fff;font-weight:800;">${finalAlt} m</span>
+        Ketinggian Kamu: <span style="color:#fff;font-weight:800;">${finalAlt} m</span><br>
+        Bintang Didapat Sesi Ini: <span style="color:#feca57;font-weight:800;">+${sessionStars} ⭐</span><br>
+        Total Bank Bintang: <span style="color:#feca57;font-weight:800;">${totalStarsStored} ⭐ (Tersimpan Permanen)</span>
         ${isNew ? '<br><span style="color:#feca57;font-weight:900;">🎉 REKOR BARU TERCATAT! 🎉</span>' : ''}
       `;
 
@@ -575,16 +844,43 @@
     function update() {
       if (!isPlaying) return;
 
+      const currentSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
       speedMult = 1.0 + Math.min(1.0, altitude / 450);
       const currentGravity = ball.baseGravity * (speedMult * 0.9);
       const currentBounce = ball.baseBounce * (speedMult * 0.95);
       const moveSpeed = 4.6 * speedMult;
 
-      if (keys.left) ball.vx = -moveSpeed;
-      else if (keys.right) ball.vx = moveSpeed;
-      else ball.vx *= 0.88;
+      if (ball.rocketTimer > 0) {
+        ball.rocketTimer--;
+        ball.vy = -16.5;
+      } else {
+        if (keys.left) ball.vx = -moveSpeed;
+        else if (keys.right) ball.vx = moveSpeed;
+        else ball.vx *= 0.88;
 
-      ball.vy += currentGravity;
+        ball.vy += currentGravity;
+      }
+
+      // Magnet
+      if (ball.magnetTimer > 0) {
+        ball.magnetTimer--;
+        platforms.forEach(p => {
+          if (p.hasStar) {
+            const starX = p.x + p.w / 2;
+            const starY = p.y - 24;
+            if (Math.hypot(ball.x - starX, ball.y - starY) < 250) {
+              p.hasStar = false;
+              sessionStars++;
+              totalStarsStored++;
+              saveStarsPermanently(); // AUTO-SAVE DETIK ITU JUGA
+              SoundEngine.star();
+              document.getElementById('hudStars').innerText = totalStarsStored;
+              addFloatingText('+1', starX, starY, '#feca57');
+            }
+          }
+        });
+      }
+
       ball.x += ball.vx;
       ball.y += ball.vy;
 
@@ -594,7 +890,11 @@
       ball.squishX += (1 - ball.squishX) * 0.14;
       ball.squishY += (1 - ball.squishY) * 0.14;
 
-      if (ball.vy > 0) {
+      ball.trail.push({ x: ball.x, y: ball.y, alpha: 0.6, color: currentSkin.aura });
+      if (ball.trail.length > 8) ball.trail.shift();
+      ball.trail.forEach(t => t.alpha *= 0.75);
+
+      if (ball.vy > 0 && ball.rocketTimer <= 0) {
         platforms.forEach(p => {
           if (
             ball.x + ball.radius * 0.5 >= p.x &&
@@ -602,12 +902,27 @@
             ball.y + ball.radius >= p.y &&
             ball.y - ball.radius * 0.5 <= p.y + p.h
           ) {
-            if (p.hasSpring && Math.abs(ball.x - (p.x + p.w / 2)) < 22) {
+            if (p.hasRocket && Math.abs(ball.x - (p.x + p.w / 2)) < 24) {
+              p.hasRocket = false;
+              ball.rocketTimer = 130;
+              SoundEngine.spring();
+              addFloatingText('ROCKET! 🚀', ball.x, ball.y - 20, '#ff9f43');
+            } else if (p.hasMagnet && Math.abs(ball.x - (p.x + p.w / 2)) < 24) {
+              p.hasMagnet = false;
+              ball.magnetTimer = 240;
+              SoundEngine.spring();
+              addFloatingText('MAGNET! 🧲', ball.x, ball.y - 20, '#38bdf8');
+            } else if (p.hasShield && Math.abs(ball.x - (p.x + p.w / 2)) < 24) {
+              p.hasShield = false;
+              hasShield = true;
+              SoundEngine.spring();
+              addFloatingText('SHIELD! 🫧', ball.x, ball.y - 20, '#48dbfb');
+            } else if (p.hasSpring && Math.abs(ball.x - (p.x + p.w / 2)) < 22) {
               ball.vy = currentBounce * 1.78;
-              Sfx.spring();
+              SoundEngine.spring();
             } else {
               ball.vy = currentBounce;
-              Sfx.bounce();
+              SoundEngine.playBounceBySkin(currentSkin.sfx);
             }
           }
         });
@@ -619,9 +934,12 @@
           const starY = p.y - 24;
           if (Math.hypot(ball.x - starX, ball.y - starY) < ball.radius + 14) {
             p.hasStar = false;
-            stars++;
-            Sfx.star();
-            document.getElementById('hudStars').innerText = stars;
+            sessionStars++;
+            totalStarsStored++;
+            saveStarsPermanently(); // AUTO-SAVE DETIK ITU JUGA KE HP
+            SoundEngine.star();
+            document.getElementById('hudStars').innerText = totalStarsStored;
+            addFloatingText('+1 ⭐', starX, starY, '#feca57');
           }
         }
         if (p.type === 'moving') {
@@ -657,7 +975,7 @@
           document.getElementById('targetTrackerText').innerText = `Target ${partner.name}: ${partner.score}m (Sisa ${remaining}m!)`;
         } else if (!hasOvertakenPartner) {
           hasOvertakenPartner = true;
-          Sfx.overtake();
+          SoundEngine.overtake();
           addFloatingText(`MENYALIP ${partner.name}! 🎉`, ball.x, ball.y - 40, '#ff758c');
           document.getElementById('targetTrackerText').innerText = `🎉 KAMU UNGGUL DI ATAS ${partner.name}!`;
         }
@@ -669,7 +987,20 @@
       });
       floatTexts = floatTexts.filter(ft => ft.alpha > 0);
 
-      if (ball.y - ball.radius > LOGICAL_HEIGHT) gameOver();
+      // Fitur Penyelamat
+      if (ball.y + ball.radius >= LOGICAL_HEIGHT - 6 && hasShield) {
+        hasShield = false;
+        ball.vy = currentBounce * 1.6;
+        SoundEngine.spring();
+        addFloatingText('SHIELD SAVED! 🫧', ball.x, ball.y - 40, '#38bdf8');
+      } else if (ball.y + ball.radius >= LOGICAL_HEIGHT - 6 && hasSafetyNet) {
+        hasSafetyNet = false;
+        ball.vy = currentBounce * 1.8;
+        SoundEngine.spring();
+        addFloatingText('SAVED! 🪂', ball.x, LOGICAL_HEIGHT - 60, '#38bdf8');
+      } else if (ball.y - ball.radius > LOGICAL_HEIGHT) {
+        gameOver();
+      }
     }
 
     function draw() {
@@ -681,12 +1012,11 @@
         ctx.fillRect(s.x, (s.y + cameraY * 0.15) % LOGICAL_HEIGHT, s.size, s.size);
       });
 
-      // GARIS PENANDA REKOR PACAR (GHOST LINE)
+      // GARIS REKOR PACAR
       const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
       const partner = coupleScores[partnerKey];
       if (partner.score > 0) {
         const partnerScreenY = (LOGICAL_HEIGHT * 0.42) + (altitude * 10) - (partner.score * 10);
-        
         if (partnerScreenY > -30 && partnerScreenY < LOGICAL_HEIGHT + 30) {
           ctx.save();
           ctx.strokeStyle = '#ff758c';
@@ -703,18 +1033,23 @@
           ctx.font = '800 13px Plus Jakarta Sans';
           ctx.textAlign = 'right';
           ctx.fillText(`${partner.avatar} Rekor ${partner.name}: ${partner.score}m`, LOGICAL_WIDTH - 15, partnerScreenY - 6);
-
-          ctx.beginPath();
-          ctx.arc(35, partnerScreenY - 14, 12, 0, Math.PI * 2);
-          ctx.fillStyle = '#ff758c';
-          ctx.fill();
-          ctx.fillStyle = '#fff';
-          ctx.font = '10px sans-serif';
-          ctx.textAlign = 'center';
-          ctx.fillText(partner.avatar, 35, partnerScreenY - 10);
-
           ctx.restore();
         }
+      }
+
+      // Jaring Penyelamat
+      if (hasSafetyNet) {
+        ctx.save();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 4;
+        ctx.shadowColor = '#38bdf8';
+        ctx.shadowBlur = 10;
+        ctx.setLineDash([8, 6]);
+        ctx.beginPath();
+        ctx.moveTo(0, LOGICAL_HEIGHT - 6);
+        ctx.lineTo(LOGICAL_WIDTH, LOGICAL_HEIGHT - 6);
+        ctx.stroke();
+        ctx.restore();
       }
 
       platforms.forEach(p => {
@@ -727,12 +1062,36 @@
           ctx.fillStyle = '#feca57';
           ctx.fillRect(p.x + p.w / 2 - 12, p.y - 8, 24, 8);
         }
+        if (p.hasRocket) {
+          ctx.font = '18px sans-serif';
+          ctx.fillText('🚀', p.x + p.w / 2 - 9, p.y - 6);
+        }
+        if (p.hasMagnet) {
+          ctx.font = '18px sans-serif';
+          ctx.fillText('🧲', p.x + p.w / 2 - 9, p.y - 6);
+        }
+        if (p.hasShield) {
+          ctx.font = '18px sans-serif';
+          ctx.fillText('🫧', p.x + p.w / 2 - 9, p.y - 6);
+        }
         if (p.hasStar) {
           ctx.font = '18px sans-serif';
           ctx.fillText('⭐', p.x + p.w / 2 - 9, p.y - 8);
         }
       });
 
+      // Trail
+      ball.trail.forEach(t => {
+        ctx.save();
+        ctx.fillStyle = t.color;
+        ctx.globalAlpha = t.alpha * 0.45;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, ball.radius * 0.75, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // Floating Texts
       floatTexts.forEach(ft => {
         ctx.save();
         ctx.globalAlpha = ft.alpha;
@@ -745,27 +1104,50 @@
         ctx.restore();
       });
 
+      // Gambar Bola Sesuai Skin
+      const skin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
+
       ctx.save();
       ctx.translate(ball.x, ball.y);
       ctx.scale(ball.squishX, ball.squishY);
-      ctx.fillStyle = myRole === 'p1' ? '#38bdf8' : '#ff758c';
-      ctx.shadowColor = myRole === 'p1' ? '#38bdf8' : '#ff758c';
-      ctx.shadowBlur = 15;
+
+      if (hasShield) {
+        ctx.save();
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.arc(0, 0, ball.radius + 8, 0, Math.PI * 2);
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      ctx.shadowColor = skin.aura;
+      ctx.shadowBlur = 16;
+      const grad = ctx.createRadialGradient(-5, -6, 2, 0, 0, ball.radius);
+      grad.addColorStop(0, skin.c1);
+      grad.addColorStop(0.4, skin.c2);
+      grad.addColorStop(1, skin.c3);
+      ctx.fillStyle = grad;
       ctx.beginPath();
       ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Mata Bola
+      // Simbol Skin di atas bola
       ctx.shadowBlur = 0;
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText(skin.symbol, 0, -ball.radius + 2);
+
+      // Mata Bola
       ctx.fillStyle = '#fff';
       ctx.beginPath();
-      ctx.arc(-5, -3, 4, 0, Math.PI * 2);
-      ctx.arc(5, -3, 4, 0, Math.PI * 2);
+      ctx.arc(-5, -2, 4, 0, Math.PI * 2);
+      ctx.arc(5, -2, 4, 0, Math.PI * 2);
       ctx.fill();
       ctx.fillStyle = '#000';
       ctx.beginPath();
-      ctx.arc(-5, -3, 2, 0, Math.PI * 2);
-      ctx.arc(5, -3, 2, 0, Math.PI * 2);
+      ctx.arc(-5, -2, 2, 0, Math.PI * 2);
+      ctx.arc(5, -2, 2, 0, Math.PI * 2);
       ctx.fill();
 
       ctx.restore();
