@@ -10,8 +10,8 @@
   <style>
     :root {
       --bg-dark: #070913;
-      --card-bg: rgba(255, 255, 255, 0.04);
-      --card-border: rgba(255, 255, 255, 0.08);
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
       --primary: #6366f1;
       --primary-glow: rgba(99, 102, 241, 0.45);
       --gold: #f59e0b;
@@ -31,7 +31,7 @@
     }
 
     body {
-      background: radial-gradient(circle at 50% 10%, #151936 0%, #060813 100%);
+      background: radial-gradient(circle at 50% 10%, #171b3c 0%, #060813 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -52,7 +52,7 @@
       background: var(--bg-dark);
     }
 
-    canvas {
+    canvas#gameCanvas {
       position: absolute;
       top: 0;
       left: 0;
@@ -99,8 +99,8 @@
 
     .target-tracker-pill {
       align-self: center;
-      background: rgba(236, 72, 153, 0.12);
-      border: 1px solid rgba(236, 72, 153, 0.3);
+      background: rgba(236, 72, 153, 0.15);
+      border: 1px solid rgba(236, 72, 153, 0.35);
       color: #fbcfe8;
       border-radius: 99px;
       padding: 5px 14px;
@@ -117,14 +117,14 @@
     .screen-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 20%, rgba(20, 26, 56, 0.94) 0%, rgba(5, 7, 18, 0.98) 100%);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      background: radial-gradient(circle at 50% 20%, rgba(20, 26, 56, 0.85) 0%, rgba(5, 7, 18, 0.92) 100%);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 30px 24px 28px;
+      padding: 24px 20px 22px;
       z-index: 10;
       text-align: center;
     }
@@ -133,49 +133,21 @@
     .hero-podium {
       position: relative;
       width: 100%;
-      height: 125px;
+      height: 120px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: 10px;
+      margin-top: 2px;
     }
 
-    .hero-ball-preview {
-      width: 58px;
-      height: 58px;
-      border-radius: 50%;
-      box-shadow: 0 0 25px var(--primary-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 26px;
-      position: relative;
-      animation: floatBall 2.6s ease-in-out infinite alternate;
-      z-index: 2;
-    }
-
-    .hero-pedestal-shadow {
-      position: absolute;
-      bottom: 22px;
-      width: 80px;
-      height: 14px;
-      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
-      border-radius: 50%;
-      animation: shadowPulse 2.6s ease-in-out infinite alternate;
-    }
-
-    @keyframes floatBall {
-      0% { transform: translateY(0px) scale(1); }
-      100% { transform: translateY(-16px) scale(1.02); }
-    }
-    @keyframes shadowPulse {
-      0% { transform: scale(1); opacity: 0.7; }
-      100% { transform: scale(0.65); opacity: 0.3; }
+    canvas.preview-canvas {
+      display: block;
+      pointer-events: none;
     }
 
     .title-banner {
-      font-size: 32px;
+      font-size: 29px;
       font-weight: 900;
       letter-spacing: -0.8px;
       line-height: 1.1;
@@ -186,10 +158,10 @@
     }
 
     .sub-banner {
-      font-size: 13px;
+      font-size: 12px;
       color: #94a3b8;
       font-weight: 500;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     /* Leaderboard Glass Card */
@@ -197,21 +169,11 @@
       width: 100%;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
-      padding: 14px 16px;
+      border-radius: 20px;
+      padding: 10px 12px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       position: relative;
       overflow: hidden;
-    }
-
-    .leaderboard-card::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     }
 
     .leaderboard-header {
@@ -222,33 +184,33 @@
       font-weight: 800;
       letter-spacing: 0.8px;
       color: #cbd5e1;
-      margin-bottom: 10px;
+      margin-bottom: 6px;
     }
 
     .rank-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px;
-      background: rgba(255, 255, 255, 0.025);
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 16px;
-      margin-bottom: 7px;
-      font-size: 14px;
+      border-radius: 14px;
+      margin-bottom: 5px;
+      font-size: 13px;
       font-weight: 700;
       color: #f1f5f9;
       transition: all 0.25s ease;
     }
 
     .rank-row.top-1 {
-      background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.03) 100%);
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.14) 0%, rgba(245, 158, 11, 0.03) 100%);
       border-color: rgba(245, 158, 11, 0.3);
       box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
     }
 
     .rank-score {
       font-weight: 800;
-      font-size: 15px;
+      font-size: 14px;
       color: #f8fafc;
       letter-spacing: -0.3px;
     }
@@ -258,19 +220,19 @@
       text-shadow: 0 0 10px rgba(252, 211, 77, 0.4);
     }
 
-    /* Segmented Switcher Role */
+    /* Role Switcher */
     .role-section {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 5px;
     }
 
     .role-section-label {
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: #64748b;
+      color: #94a3b8;
       font-weight: 800;
     }
 
@@ -278,7 +240,7 @@
       display: flex;
       background: rgba(10, 14, 30, 0.7);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
+      border-radius: 18px;
       padding: 4px;
       gap: 4px;
     }
@@ -287,8 +249,8 @@
       flex: 1;
       background: transparent;
       border: none;
-      padding: 9px 12px;
-      border-radius: 16px;
+      padding: 7px 10px;
+      border-radius: 14px;
       font-size: 13px;
       font-weight: 800;
       color: #94a3b8;
@@ -298,12 +260,6 @@
       justify-content: center;
       gap: 6px;
       transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-
-    .role-btn.active {
-      background: rgba(255, 255, 255, 0.12);
-      color: #ffffff;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
     }
 
     .role-btn.active.p1 {
@@ -318,34 +274,39 @@
       color: #fce7f3;
     }
 
-    /* Actions Bottom */
+    /* Buttons */
     .button-stack {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 7px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 7px;
+      width: 100%;
     }
 
     .btn-secondary {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #f1f5f9;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 12px 18px;
-      border-radius: 20px;
+      padding: 10px 14px;
+      border-radius: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       transition: all 0.2s;
     }
 
     .btn-secondary:active {
-      transform: scale(0.98);
-      background: rgba(255, 255, 255, 0.08);
+      transform: scale(0.97);
+      background: rgba(255, 255, 255, 0.1);
     }
 
     .btn-primary {
@@ -354,17 +315,17 @@
       background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
       border: none;
       color: #ffffff;
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 900;
-      padding: 16px 24px;
-      border-radius: 22px;
+      padding: 13px 20px;
+      border-radius: 18px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       box-shadow: 
-        0 12px 28px -5px rgba(139, 92, 246, 0.5),
+        0 10px 25px -4px rgba(139, 92, 246, 0.5),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
       overflow: hidden;
       transition: all 0.2s;
@@ -389,45 +350,44 @@
 
     .btn-primary:active {
       transform: scale(0.97);
-      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
     }
 
     .btn-whatsapp {
       background: linear-gradient(135deg, #10b981 0%, #059669 100%);
       border: none;
       color: #ffffff;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
-      padding: 13px 20px;
-      border-radius: 20px;
+      padding: 12px 18px;
+      border-radius: 18px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      box-shadow: 0 8px 22px -4px rgba(16, 185, 129, 0.4);
+      gap: 6px;
+      box-shadow: 0 6px 18px -3px rgba(16, 185, 129, 0.4);
     }
 
     .btn-whatsapp:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
-    /* Modal Wardrobe */
-    .wardrobe-modal {
+    /* Modal Fullscreen */
+    .app-modal {
       position: absolute;
       inset: 0;
       background: rgba(7, 9, 19, 0.98);
       z-index: 20;
       display: flex;
       flex-direction: column;
-      padding: 24px 20px 20px;
+      padding: 20px 18px 18px;
     }
 
-    .wardrobe-header {
+    .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 10px;
     }
 
     .close-btn {
@@ -444,18 +404,171 @@
       justify-content: center;
     }
 
+    /* Showcase Box Preview */
+    .skin-inspect-box {
+      background: radial-gradient(circle at 50% 20%, rgba(99, 102, 241, 0.15), rgba(15, 23, 42, 0.6));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 24px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .inspect-stage {
+      position: relative;
+      width: 100%;
+      height: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .inspect-info {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 4px;
+      margin-bottom: 8px;
+    }
+
+    .inspect-name-box {
+      text-align: left;
+    }
+
+    .inspect-name {
+      font-size: 16px;
+      font-weight: 900;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .inspect-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .inspect-meta {
+      font-size: 11px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+
+    .inspect-action-btn {
+      width: 100%;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .inspect-action-btn.equip {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+    }
+
+    .inspect-action-btn.buy {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
+    }
+
+    .inspect-action-btn.cant-buy {
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: not-allowed;
+    }
+
+    .inspect-action-btn.prev-locked {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      cursor: not-allowed;
+    }
+
+    .inspect-action-btn.equipped {
+      background: rgba(255, 255, 255, 0.1);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      cursor: default;
+    }
+
+    /* Modal Catatan & Panduan */
+    .guide-scroll-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+      padding-right: 4px;
+    }
+
+    .guide-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+
+    .guide-card-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #fcd34d;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .guide-card-text {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.6;
+      font-weight: 500;
+    }
+
+    .highlight-badge {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.4);
+      color: #c7d2fe;
+      padding: 1px 6px;
+      border-radius: 6px;
+      font-weight: 700;
+    }
+
+    /* Skins Grid */
     .skins-scroll-area {
       flex: 1;
       overflow-y: auto;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
+      gap: 9px;
       padding-bottom: 20px;
     }
 
     .skin-card {
       aspect-ratio: 1;
-      border-radius: 20px;
+      border-radius: 18px;
       cursor: pointer;
       border: 2px solid transparent;
       display: flex;
@@ -467,15 +580,24 @@
       transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
+    .skin-card.inspecting {
+      border-color: #fcd34d !important;
+      transform: scale(1.05);
+      box-shadow: 0 0 16px rgba(252, 211, 77, 0.7);
+    }
+
     .skin-card.selected {
       border-color: #ffffff;
-      transform: scale(1.05);
-      box-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
     }
 
     .skin-card.locked {
-      opacity: 0.4;
-      filter: grayscale(0.85);
+      opacity: 0.45;
+      filter: grayscale(0.8);
+    }
+
+    .skin-card.chain-locked {
+      opacity: 0.25;
+      filter: grayscale(1);
     }
 
     .skin-cost-tag {
@@ -513,18 +635,16 @@
       </div>
     </div>
 
-    <!-- START SCREEN (PROFESSIONAL HERO UI) -->
+    <!-- START SCREEN -->
     <div id="screenStart" class="screen-overlay">
-      <!-- Top Title Area -->
       <div>
         <h1 class="title-banner">SUPER BOUNCE</h1>
         <p class="sub-banner">Couple Realtime Climber</p>
       </div>
 
-      <!-- Hero Ball 3D Floating Pedestal -->
+      <!-- Hero Ball Animated Canvas Podium -->
       <div class="hero-podium">
-        <div id="heroBallPreview" class="hero-ball-preview">🌸</div>
-        <div class="hero-pedestal-shadow"></div>
+        <canvas id="heroPreviewCanvas" class="preview-canvas" width="160" height="120"></canvas>
       </div>
 
       <!-- Leaderboard Card -->
@@ -553,36 +673,149 @@
 
       <!-- Action Buttons -->
       <div class="button-stack">
-        <button class="btn-secondary" onclick="openWardrobe()">
-          <span>👗</span> Lemari 30 Skin (<span id="btnSkinCountText">1/30</span>)
-        </button>
+        <div class="btn-row">
+          <button class="btn-secondary" style="flex:1;" onclick="openWardrobe()">
+            <span>👗</span> Skin (<span id="btnSkinCountText">1/30</span>)
+          </button>
+          <button class="btn-secondary" style="flex:1;" onclick="openGuide()">
+            <span>📖</span> Panduan & Fitur
+          </button>
+        </div>
         <button id="btnStart" class="btn-primary">
           Mulai Meluncur 🚀
         </button>
       </div>
     </div>
 
-    <!-- MODAL WARDROBE -->
-    <div id="modalWardrobe" class="wardrobe-modal hide">
-      <div class="wardrobe-header">
+    <!-- MODAL CATATAN & CARA MAIN (LENGKAP DENGAN PANDUAN AUTO-SAVE) -->
+    <div id="modalGuide" class="app-modal hide">
+      <div class="modal-header">
         <div>
-          <h2 style="font-size: 19px; color: #fff; font-weight:800;">LEMARI SKIN BOLA</h2>
-          <span style="font-size: 12px; color: #f59e0b; font-weight:700;">⭐ Saldo: <span id="wardrobeStarBalance">0</span></span>
+          <h2 style="font-size: 18px; color: #fff; font-weight:800;">CATATAN CARA BERMAIN</h2>
+          <span style="font-size: 11px; color: #94a3b8;">Panduan Singkat & Fitur Lengkap</span>
+        </div>
+        <button class="close-btn" onclick="closeGuide()">✕</button>
+      </div>
+
+      <div class="guide-scroll-area">
+        <!-- 1. KONTROL -->
+        <div class="guide-card">
+          <div class="guide-card-title">🎮 Cara Mengendalikan Bola</div>
+          <div class="guide-card-text">
+            • <b>HP / Touchscreen:</b> Sentuh dan <b>geser jari (swipe)</b> ke kiri atau kanan.<br>
+            • <b>Laptop / PC:</b> Gunakan tombol panah <span class="highlight-badge">←</span> <span class="highlight-badge">→</span> atau huruf <span class="highlight-badge">A</span> <span class="highlight-badge">D</span>.<br>
+            • <i>Tembus Layar:</i> Bola bisa menembus dinding kiri untuk langsung keluar dari kanan.
+          </div>
+        </div>
+
+        <!-- 2. SISTEM AUTO-SAVE & KEAMANAN DATA -->
+        <div class="guide-card" style="border-color: rgba(16, 185, 129, 0.35); background: linear-gradient(135deg, rgba(16,185,129,0.08), rgba(255,255,255,0.02));">
+          <div class="guide-card-title" style="color: #34d399;">💾 Sistem Penyimpanan Otomatis (Auto-Save)</div>
+          <div class="guide-card-text">
+            • <b>Simpan Detik Itu Juga:</b> Setiap kali kamu mengambil bintang ⭐ dan membeli skin di lemari, data <b>langsung tersimpan permanen</b> ke memori browser HP-mu (`localStorage`).<br>
+            • <b>Aman Ditutup Kapan Saja:</b> Kamu bebas menutup browser atau mematikan HP kapan saja tanpa takut bintang atau skin ter-reset.<br>
+            • <b>Tips Penting:</b> Hindari bermain di mode <i>Incognito / Private Tab</i> dan jangan bersihkan <i>Data/Cache Browser</i> agar progres koleksimu tidak terhapus.
+          </div>
+        </div>
+
+        <!-- 3. ATURAN 30 SKIN & PROGRESI -->
+        <div class="guide-card">
+          <div class="guide-card-title">👗 Koleksi 30 Skin & Aturan Beli</div>
+          <div class="guide-card-text">
+            • <b>Beli Berjenjang:</b> Skin wajib dibuka berurutan satu per satu dari kiri ke kanan. Skin mahal terkunci sampai kamu membuka skin sebelumnya!<br>
+            • <b>Live 60 FPS Inspect:</b> Sentuh skin apa saja di lemari untuk melihat demo visual aura petir, bara api, serta suaranya sebelum membeli.
+          </div>
+        </div>
+
+        <!-- 4. KASTA (TIER) & AURA SPESIAL SKIN -->
+        <div class="guide-card">
+          <div class="guide-card-title">✨ Kasta Aura & Keunikan Tiap Skin</div>
+          <div class="guide-card-text">
+            • <b>Common / Rare (<300 ⭐):</b> Efek aura lembut dengan percikan partikel ringan.<br>
+            • <b>Epic (300 - 699 ⭐):</b> Dilengkapi partikel bara api meliuk, sambaran petir listrik, atau kilauan kristal.<br>
+            • <b>Legendary (700 - 999 ⭐):</b> Memiliki <b>Cincin Cakra Orbital 3D</b> yang berputar dan satelit permata mengorbit.<br>
+            • <b>Mythic / Dewa (1000+ ⭐):</b> Aura tertinggi dengan <b>Cincin Ganda Berlawanan Arah, Radiasi Cahaya Dewa (Godrays)</b>, dan efek api/petir dahsyat!
+          </div>
+        </div>
+
+        <!-- 5. SOUND & MUSIK KHUSUS -->
+        <div class="guide-card">
+          <div class="guide-card-title">🎵 Audio Pantulan & Musik Dinamis</div>
+          <div class="guide-card-text">
+            • <b>Suara Pantulan Khusus:</b> Tiap skin memiliki suara loncatan berbeda (Pop Gelembung, Lonceng Kristal Es, Laser Berat, Dentuman Kosmis, atau Nada 8-Bit Arpeggio).<br>
+            • <b>BGM Berganti Otomatis:</b> Musik latar permainan otomatis berubah mengikuti skin yang kamu kenakan (Happy, Chill, Arcade Retro, atau Kosmis Angkasa).
+          </div>
+        </div>
+
+        <!-- 6. CARA MAIN BARENG PACAR -->
+        <div class="guide-card">
+          <div class="guide-card-title">📲 Cara Main Bareng & Kirim ke WA</div>
+          <div class="guide-card-text">
+            1. Mainkan ronde lompatan sampai selesai.<br>
+            2. Di layar akhir, tekan tombol hijau <b>"Kirim ke WA"</b>.<br>
+            3. Kirimkan pesan tersebut ke WhatsApp pacarmu.<br>
+            4. <b>Saat pacarmu membuka link dari WA</b>, papan rekor kalian berdua langsung tersinkron dan garis rekornya otomatis muncul di gamemu!
+          </div>
+        </div>
+
+        <!-- 7. POWER-UP & BINTANG -->
+        <div class="guide-card">
+          <div class="guide-card-title">🚀 Power-Up & Mekanik Khusus</div>
+          <div class="guide-card-text">
+            • 🚀 <b>Roket:</b> Melesat super kencang menembus ratusan meter.<br>
+            • 🧲 <b>Magnet:</b> Menghisap semua bintang di sekeliling bola.<br>
+            • 🫧 <b>Perisai:</b> Melindungi bola dari 1x terjatuh.<br>
+            • 🟡 <b>Pegas Emas:</b> Pantulan super tinggi ke langit.<br>
+            • 🪂 <b>Safety Net:</b> Garis pengaman di dasar yang menyelamatkan 1x.<br>
+            • ⭐ <b>Bintang Melimpah:</b> Bintang sering muncul dan memberi <b>+2 s/d +3 ⭐</b> per bintang!
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL WARDROBE -->
+    <div id="modalWardrobe" class="app-modal hide">
+      <div class="modal-header">
+        <div>
+          <h2 style="font-size: 18px; color: #fff; font-weight:800;">LEMARI 30 SKIN BOLA</h2>
+          <span style="font-size: 12px; color: #f59e0b; font-weight:700;">⭐ Saldo Bintang: <span id="wardrobeStarBalance">0</span></span>
         </div>
         <button class="close-btn" onclick="closeWardrobe()">✕</button>
       </div>
+
+      <!-- Showcase Box Preview Skin dengan Canvas VFX Aktif -->
+      <div class="skin-inspect-box">
+        <div class="inspect-stage">
+          <canvas id="inspectPreviewCanvas" class="preview-canvas" width="160" height="100"></canvas>
+        </div>
+        <div class="inspect-info">
+          <div class="inspect-name-box">
+            <div class="inspect-name">
+              <span id="inspectSkinName">Cherry Ball</span>
+              <span id="inspectSkinTier" class="inspect-badge" style="background:rgba(236,72,153,0.2); color:#f472b6; border:1px solid rgba(236,72,153,0.4);">Common</span>
+            </div>
+            <div id="inspectSkinMeta" class="inspect-meta">Audio: Bubble Pop &bull; BGM: Lofi Happy</div>
+          </div>
+          <div id="inspectPriceTag" style="font-size:14px; font-weight:900; color:#fcd34d;">GRATIS</div>
+        </div>
+        <button id="btnInspectAction" class="inspect-action-btn equip" onclick="handleInspectAction()">
+          Gunakan Skin
+        </button>
+      </div>
+
+      <!-- Grid Daftar Skin -->
       <div class="skins-scroll-area" id="skinsGrid"></div>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="screenGameOver" class="screen-overlay hide">
       <div>
-        <div style="font-size: 40px; margin-bottom: 2px;">🌠</div>
+        <div style="font-size: 38px; margin-bottom: 2px;">🌠</div>
         <h1 class="title-banner" style="background: linear-gradient(135deg, #f87171, #fb923c); -webkit-background-clip: text;">RONDE SELESAI</h1>
-        <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-top: 4px;">Ketinggian: 0 m</p>
+        <p id="statsText" style="color: #cbd5e1; font-size: 13px; margin-top: 3px;">Ketinggian: 0 m</p>
       </div>
 
-      <div id="gapBadge" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:8px 14px; font-size:12px; font-weight:700; color:#cbd5e1;">
+      <div id="gapBadge" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:7px 12px; font-size:12px; font-weight:700; color:#cbd5e1;">
         Memeriksa rekor...
       </div>
 
@@ -591,12 +824,18 @@
       </div>
 
       <div class="button-stack">
-        <button class="btn-whatsapp" onclick="shareScoreToPartner()">
-          <span>📤</span> Kirim Skor ke WA Pacar
-        </button>
         <button id="btnRestart" class="btn-primary">
           Lompat Lagi 🔁
         </button>
+
+        <div class="btn-row">
+          <button class="btn-secondary" style="flex:1;" onclick="goToLobby()">
+            <span>🏠</span> Lobi / Skin
+          </button>
+          <button class="btn-whatsapp" style="flex:1.2;" onclick="shareScoreToPartner()">
+            <span>📤</span> Kirim ke WA
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -616,44 +855,46 @@
     }
     resizeCanvasHD();
 
-    /* ================= 30 SKIN BOLA ================= */
+    /* ================= 30 SKIN BOLA & AURA THEMES ================= */
     const SKINS_DATABASE = [
-      { id: 'classic', name: 'Cherry', symbol: '🌸', c1: '#fbcfe8', c2: '#f472b6', c3: '#db2777', aura: '#f472b6', sfx: 'pop', bgm: 'happy', cost: 0 },
-      { id: 'blueberry', name: 'Berry', symbol: '🫐', c1: '#bfdbfe', c2: '#60a5fa', c3: '#2563eb', aura: '#3b82f6', sfx: 'water', bgm: 'chill', cost: 25 },
-      { id: 'lime', name: 'Lime', symbol: '🍋', c1: '#fef08a', c2: '#a3e635', c3: '#65a30d', aura: '#84cc16', sfx: 'squish', bgm: 'arcade', cost: 50 },
-      { id: 'orange', name: 'Juicy', symbol: '🍊', c1: '#fed7aa', c2: '#fb923c', c3: '#ea580c', aura: '#f97316', sfx: 'pop', bgm: 'happy', cost: 75 },
-      { id: 'boba', name: 'Boba', symbol: '🧋', c1: '#d7ccc8', c2: '#a1887f', c3: '#5d4037', aura: '#8d6e63', sfx: 'squish', bgm: 'chill', cost: 100 },
-      { id: 'cookie', name: 'Cookie', symbol: '🍪', c1: '#fde68a', c2: '#d97706', c3: '#78350f', aura: '#b45309', sfx: 'pop', bgm: 'happy', cost: 130 },
-      { id: 'slime', name: 'Slime', symbol: '🟢', c1: '#bbf7d0', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: 'squish', bgm: 'chill', cost: 160 },
-      { id: 'bubblegum', name: 'Gum', symbol: '🍬', c1: '#f5d0fe', c2: '#e879f9', c3: '#a21caf', aura: '#c026d3', sfx: 'pop', bgm: 'happy', cost: 200 },
-      { id: 'electric', name: 'Volt', symbol: '⚡', c1: '#cffafe', c2: '#22d3ee', c3: '#0891b2', aura: '#06b6d4', sfx: 'laser', bgm: 'arcade', cost: 240 },
-      { id: 'flame', name: 'Blaze', symbol: '🔥', c1: '#ffedd5', c2: '#f97316', c3: '#b91c1c', aura: '#ef4444', sfx: 'laser', bgm: 'arcade', cost: 280 },
-      { id: 'frost', name: 'Frost', symbol: '❄️', c1: '#e0f2fe', c2: '#7dd3fc', c3: '#0284c7', aura: '#38bdf8', sfx: 'bell', bgm: 'cosmic', cost: 320 },
-      { id: 'plasma', name: 'Plasma', symbol: '🟣', c1: '#ede9fe', c2: '#a855f7', c3: '#6b21a8', aura: '#9333ea', sfx: 'laser', bgm: 'cosmic', cost: 360 },
-      { id: 'ocean', name: 'Aqua', symbol: '🌊', c1: '#ccfbf1', c2: '#2dd4bf', c3: '#0f766e', aura: '#14b8a6', sfx: 'water', bgm: 'chill', cost: 400 },
-      { id: 'sun', name: 'Solar', symbol: '☀️', c1: '#fef08a', c2: '#eab308', c3: '#a16207', aura: '#ca8a04', sfx: 'bell', bgm: 'happy', cost: 450 },
-      { id: 'moon', name: 'Lunar', symbol: '🌙', c1: '#f1f5f9', c2: '#cbd5e1', c3: '#475569', aura: '#94a3b8', sfx: 'bell', bgm: 'cosmic', cost: 500 },
-      { id: 'clover', name: 'Lucky', symbol: '🍀', c1: '#dcfce7', c2: '#22c55e', c3: '#14532d', aura: '#16a34a', sfx: 'bell', bgm: 'happy', cost: 550 },
-      { id: 'gem_ruby', name: 'Ruby', symbol: '💎', c1: '#ffe4e6', c2: '#f43f5e', c3: '#881337', aura: '#e11d48', sfx: 'bell', bgm: 'cosmic', cost: 600 },
-      { id: 'gem_sapphire', name: 'Sapphire', symbol: '💠', c1: '#e0e7ff', c2: '#6366f1', c3: '#312e81', aura: '#4f46e5', sfx: 'bell', bgm: 'cosmic', cost: 650 },
-      { id: 'gem_emerald', name: 'Emerald', symbol: '❇️', c1: '#d1fae5', c2: '#10b981', c3: '#064e3b', aura: '#059669', sfx: 'bell', bgm: 'cosmic', cost: 700 },
-      { id: 'gold', name: 'Midas', symbol: '👑', c1: '#fef9c3', c2: '#facc15', c3: '#854d0e', aura: '#eab308', sfx: 'bell', bgm: 'arcade', cost: 750 },
-      { id: 'heart', name: 'Cupid', symbol: '💖', c1: '#ffe4e6', c2: '#fb7185', c3: '#be123c', aura: '#f43f5e', sfx: 'pop', bgm: 'happy', cost: 800 },
-      { id: 'cyber', name: 'Matrix', symbol: '🛸', c1: '#dcfce7', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: '8bit', bgm: 'arcade', cost: 850 },
-      { id: 'synthwave', name: 'Retro', symbol: '🌆', c1: '#fae8ff', c2: '#d946ef', c3: '#701a75', aura: '#c026d3', sfx: '8bit', bgm: 'arcade', cost: 900 },
-      { id: 'galaxy', name: 'Nebula', symbol: '🌌', c1: '#ede9fe', c2: '#8b5cf6', c3: '#4c1d95', aura: '#7c3aed', sfx: 'cosmic', bgm: 'cosmic', cost: 950 },
-      { id: 'supernova', name: 'Nova', symbol: '💥', c1: '#ffedd5', c2: '#fb923c', c3: '#7c2d12', aura: '#ea580c', sfx: 'laser', bgm: 'arcade', cost: 1000 },
-      { id: 'void', name: 'Abyss', symbol: '⚫', c1: '#64748b', c2: '#334155', c3: '#020617', aura: '#475569', sfx: 'cosmic', bgm: 'cosmic', cost: 1100 },
-      { id: 'angel', name: 'Seraph', symbol: '🪽', c1: '#ffffff', c2: '#fef08a', c3: '#e2e8f0', aura: '#fef9c3', sfx: 'bell', bgm: 'happy', cost: 1200 },
-      { id: 'demon', name: 'Inferno', symbol: '😈', c1: '#fee2e2', c2: '#ef4444', c3: '#450a0a', aura: '#dc2626', sfx: 'laser', bgm: 'arcade', cost: 1300 },
-      { id: 'rainbow', name: 'Prism', symbol: '🌈', c1: '#fbcfe8', c2: '#38bdf8', c3: '#facc15', aura: '#ffffff', sfx: 'bell', bgm: 'happy', cost: 1500 },
-      { id: 'stellar', name: 'Ascended', symbol: '✨', c1: '#ffffff', c2: '#e0e7ff', c3: '#fde047', aura: '#facc15', sfx: 'cosmic', bgm: 'cosmic', cost: 2000 }
+      { id: 'classic', name: 'Cherry', symbol: '🌸', c1: '#fbcfe8', c2: '#f472b6', c3: '#db2777', aura: '#f472b6', sfx: 'pop', bgm: 'happy', cost: 0, auraType: 'soft' },
+      { id: 'blueberry', name: 'Berry', symbol: '🫐', c1: '#bfdbfe', c2: '#60a5fa', c3: '#2563eb', aura: '#3b82f6', sfx: 'water', bgm: 'chill', cost: 25, auraType: 'water' },
+      { id: 'lime', name: 'Lime', symbol: '🍋', c1: '#fef08a', c2: '#a3e635', c3: '#65a30d', aura: '#84cc16', sfx: 'squish', bgm: 'arcade', cost: 50, auraType: 'soft' },
+      { id: 'orange', name: 'Juicy', symbol: '🍊', c1: '#fed7aa', c2: '#fb923c', c3: '#ea580c', aura: '#f97316', sfx: 'pop', bgm: 'happy', cost: 75, auraType: 'spark' },
+      { id: 'boba', name: 'Boba', symbol: '🧋', c1: '#d7ccc8', c2: '#a1887f', c3: '#5d4037', aura: '#8d6e63', sfx: 'squish', bgm: 'chill', cost: 100, auraType: 'soft' },
+      { id: 'cookie', name: 'Cookie', symbol: '🍪', c1: '#fde68a', c2: '#d97706', c3: '#78350f', aura: '#b45309', sfx: 'pop', bgm: 'happy', cost: 130, auraType: 'spark' },
+      { id: 'slime', name: 'Slime', symbol: '🟢', c1: '#bbf7d0', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: 'squish', bgm: 'chill', cost: 160, auraType: 'soft' },
+      { id: 'bubblegum', name: 'Gum', symbol: '🍬', c1: '#f5d0fe', c2: '#e879f9', c3: '#a21caf', aura: '#c026d3', sfx: 'pop', bgm: 'happy', cost: 200, auraType: 'spark' },
+      { id: 'electric', name: 'Volt', symbol: '⚡', c1: '#cffafe', c2: '#22d3ee', c3: '#0891b2', aura: '#06b6d4', sfx: 'laser', bgm: 'arcade', cost: 240, auraType: 'lightning' },
+      { id: 'flame', name: 'Blaze', symbol: '🔥', c1: '#ffedd5', c2: '#f97316', c3: '#b91c1c', aura: '#ef4444', sfx: 'laser', bgm: 'arcade', cost: 280, auraType: 'fire' },
+      { id: 'frost', name: 'Frost', symbol: '❄️', c1: '#e0f2fe', c2: '#7dd3fc', c3: '#0284c7', aura: '#38bdf8', sfx: 'bell', bgm: 'cosmic', cost: 320, auraType: 'frost' },
+      { id: 'plasma', name: 'Plasma', symbol: '🟣', c1: '#ede9fe', c2: '#a855f7', c3: '#6b21a8', aura: '#9333ea', sfx: 'laser', bgm: 'cosmic', cost: 360, auraType: 'lightning' },
+      { id: 'ocean', name: 'Aqua', symbol: '🌊', c1: '#ccfbf1', c2: '#2dd4bf', c3: '#0f766e', aura: '#14b8a6', sfx: 'water', bgm: 'chill', cost: 400, auraType: 'water' },
+      { id: 'sun', name: 'Solar', symbol: '☀️', c1: '#fef08a', c2: '#eab308', c3: '#a16207', aura: '#ca8a04', sfx: 'bell', bgm: 'happy', cost: 450, auraType: 'fire' },
+      { id: 'moon', name: 'Lunar', symbol: '🌙', c1: '#f1f5f9', c2: '#cbd5e1', c3: '#475569', aura: '#94a3b8', sfx: 'bell', bgm: 'cosmic', cost: 500, auraType: 'cosmic' },
+      { id: 'clover', name: 'Lucky', symbol: '🍀', c1: '#dcfce7', c2: '#22c55e', c3: '#14532d', aura: '#16a34a', sfx: 'bell', bgm: 'happy', cost: 550, auraType: 'spark' },
+      { id: 'gem_ruby', name: 'Ruby', symbol: '💎', c1: '#ffe4e6', c2: '#f43f5e', c3: '#881337', aura: '#e11d48', sfx: 'bell', bgm: 'cosmic', cost: 600, auraType: 'crystal' },
+      { id: 'gem_sapphire', name: 'Sapphire', symbol: '💠', c1: '#e0e7ff', c2: '#6366f1', c3: '#312e81', aura: '#4f46e5', sfx: 'bell', bgm: 'cosmic', cost: 650, auraType: 'crystal' },
+      { id: 'gem_emerald', name: 'Emerald', symbol: '❇️', c1: '#d1fae5', c2: '#10b981', c3: '#064e3b', aura: '#059669', sfx: 'bell', bgm: 'cosmic', cost: 700, auraType: 'crystal' },
+      { id: 'gold', name: 'Midas', symbol: '👑', c1: '#fef9c3', c2: '#facc15', c3: '#854d0e', aura: '#facc15', sfx: 'bell', bgm: 'arcade', cost: 750, auraType: 'gold' },
+      { id: 'heart', name: 'Cupid', symbol: '💖', c1: '#ffe4e6', c2: '#fb7185', c3: '#be123c', aura: '#f43f5e', sfx: 'pop', bgm: 'happy', cost: 800, auraType: 'love' },
+      { id: 'cyber', name: 'Matrix', symbol: '🛸', c1: '#dcfce7', c2: '#4ade80', c3: '#15803d', aura: '#22c55e', sfx: '8bit', bgm: 'arcade', cost: 850, auraType: 'lightning' },
+      { id: 'synthwave', name: 'Retro', symbol: '🌆', c1: '#fae8ff', c2: '#d946ef', c3: '#701a75', aura: '#c026d3', sfx: '8bit', bgm: 'arcade', cost: 900, auraType: 'cosmic' },
+      { id: 'galaxy', name: 'Nebula', symbol: '🌌', c1: '#ede9fe', c2: '#8b5cf6', c3: '#4c1d95', aura: '#a855f7', sfx: 'cosmic', bgm: 'cosmic', cost: 950, auraType: 'cosmic' },
+      { id: 'supernova', name: 'Nova', symbol: '💥', c1: '#ffedd5', c2: '#fb923c', c3: '#7c2d12', aura: '#f97316', sfx: 'laser', bgm: 'arcade', cost: 1000, auraType: 'fire' },
+      { id: 'void', name: 'Abyss', symbol: '⚫', c1: '#64748b', c2: '#334155', c3: '#020617', aura: '#6366f1', sfx: 'cosmic', bgm: 'cosmic', cost: 1100, auraType: 'abyss' },
+      { id: 'angel', name: 'Seraph', symbol: '🪽', c1: '#ffffff', c2: '#fef08a', c3: '#e2e8f0', aura: '#fef08a', sfx: 'bell', bgm: 'happy', cost: 1200, auraType: 'angel' },
+      { id: 'demon', name: 'Inferno', symbol: '😈', c1: '#fee2e2', c2: '#ef4444', c3: '#450a0a', aura: '#ef4444', sfx: 'laser', bgm: 'arcade', cost: 1300, auraType: 'fire' },
+      { id: 'rainbow', name: 'Prism', symbol: '🌈', c1: '#fbcfe8', c2: '#38bdf8', c3: '#facc15', aura: '#ec4899', sfx: 'bell', bgm: 'happy', cost: 1500, auraType: 'rainbow' },
+      { id: 'stellar', name: 'Ascended', symbol: '✨', c1: '#ffffff', c2: '#e0e7ff', c3: '#fde047', aura: '#facc15', sfx: 'cosmic', bgm: 'cosmic', cost: 2000, auraType: 'god' }
     ];
 
     /* ================= STORAGE AUTO-SAVE ================= */
     let totalStarsStored = parseInt(localStorage.getItem('bounce_star_bank_permanent') || '0');
     let currentSkinId = localStorage.getItem('bounce_equipped_skin_permanent') || 'classic';
     let unlockedSkins = JSON.parse(localStorage.getItem('bounce_unlocked_list_permanent') || '["classic"]');
+
+    let inspectingSkinId = currentSkinId;
 
     function saveStarsPermanently() {
       localStorage.setItem('bounce_star_bank_permanent', totalStarsStored.toString());
@@ -664,59 +905,149 @@
       localStorage.setItem('bounce_unlocked_list_permanent', JSON.stringify(unlockedSkins));
     }
 
+    function getSkinTier(cost) {
+      if (cost >= 1000) return { name: 'Mythic', bg: 'rgba(236,72,153,0.25)', color: '#f472b6', border: 'rgba(236,72,153,0.5)' };
+      if (cost >= 700) return { name: 'Legendary', bg: 'rgba(245,158,11,0.25)', color: '#fcd34d', border: 'rgba(245,158,11,0.5)' };
+      if (cost >= 300) return { name: 'Epic', bg: 'rgba(168,85,247,0.25)', color: '#c084fc', border: 'rgba(168,85,247,0.5)' };
+      if (cost >= 100) return { name: 'Rare', bg: 'rgba(56,189,248,0.25)', color: '#38bdf8', border: 'rgba(56,189,248,0.5)' };
+      return { name: 'Common', bg: 'rgba(148,163,184,0.2)', color: '#cbd5e1', border: 'rgba(148,163,184,0.4)' };
+    }
+
+    function updateInspectBox(skinId) {
+      inspectingSkinId = skinId;
+      const sIndex = SKINS_DATABASE.findIndex(item => item.id === skinId);
+      const s = SKINS_DATABASE[sIndex] || SKINS_DATABASE[0];
+      const isUnlocked = unlockedSkins.includes(s.id);
+      const isEquipped = currentSkinId === s.id;
+      const tier = getSkinTier(s.cost);
+
+      const prevSkin = sIndex > 0 ? SKINS_DATABASE[sIndex - 1] : null;
+      const isPrevUnlocked = !prevSkin || unlockedSkins.includes(prevSkin.id);
+
+      document.getElementById('inspectSkinName').innerText = s.name;
+      const tierBadge = document.getElementById('inspectSkinTier');
+      tierBadge.innerText = tier.name;
+      tierBadge.style.background = tier.bg;
+      tierBadge.style.color = tier.color;
+      tierBadge.style.borderColor = tier.border;
+
+      document.getElementById('inspectSkinMeta').innerText = `Sound: ${s.sfx.toUpperCase()} • BGM: ${s.bgm.toUpperCase()}`;
+      document.getElementById('inspectPriceTag').innerText = s.cost === 0 ? 'GRATIS' : `⭐ ${s.cost}`;
+
+      const btnAction = document.getElementById('btnInspectAction');
+      btnAction.className = 'inspect-action-btn';
+
+      if (isEquipped) {
+        btnAction.classList.add('equipped');
+        btnAction.innerText = '✓ Sedang Digunakan';
+      } else if (isUnlocked) {
+        btnAction.classList.add('equip');
+        btnAction.innerText = 'Pakai Skin Ini';
+      } else if (!isPrevUnlocked) {
+        btnAction.classList.add('prev-locked');
+        btnAction.innerText = `🔒 Buka ${prevSkin.name} Dulu!`;
+      } else if (totalStarsStored >= s.cost) {
+        btnAction.classList.add('buy');
+        btnAction.innerText = `Buka Skin (⭐ ${s.cost})`;
+      } else {
+        btnAction.classList.add('cant-buy');
+        btnAction.innerText = `Bintang Kurang (Kurang ${s.cost - totalStarsStored} ⭐)`;
+      }
+
+      SoundEngine.playBounceBySkin(s.sfx);
+    }
+
+    function handleInspectAction() {
+      const sIndex = SKINS_DATABASE.findIndex(item => item.id === inspectingSkinId);
+      const s = SKINS_DATABASE[sIndex] || SKINS_DATABASE[0];
+      const isUnlocked = unlockedSkins.includes(s.id);
+
+      const prevSkin = sIndex > 0 ? SKINS_DATABASE[sIndex - 1] : null;
+      const isPrevUnlocked = !prevSkin || unlockedSkins.includes(prevSkin.id);
+
+      if (isUnlocked) {
+        currentSkinId = s.id;
+        saveSkinsPermanently();
+        SoundEngine.switchSkinBgm(s.bgm);
+        updateWardrobeUI();
+      } else if (!isPrevUnlocked) {
+        SoundEngine.fall();
+      } else if (totalStarsStored >= s.cost) {
+        totalStarsStored -= s.cost;
+        saveStarsPermanently();
+        unlockedSkins.push(s.id);
+        currentSkinId = s.id;
+        saveSkinsPermanently();
+        SoundEngine.switchSkinBgm(s.bgm);
+        updateWardrobeUI();
+      }
+    }
+
     function updateWardrobeUI() {
       document.getElementById('wardrobeStarBalance').innerText = totalStarsStored;
       document.getElementById('hudStars').innerText = totalStarsStored;
       document.getElementById('btnSkinCountText').innerText = `${unlockedSkins.length}/30`;
 
-      // Update Hero Preview di Menu Utama
       const curSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
-      const preview = document.getElementById('heroBallPreview');
-      preview.innerText = curSkin.symbol;
-      preview.style.background = `linear-gradient(135deg, ${curSkin.c1}, ${curSkin.c3})`;
-      preview.style.boxShadow = `0 0 25px ${curSkin.aura}88`;
+      const heroPreview = document.getElementById('heroBallPreview');
+      if (heroPreview) {
+        heroPreview.innerText = curSkin.symbol;
+        heroPreview.style.background = `linear-gradient(135deg, ${curSkin.c1}, ${curSkin.c3})`;
+      }
 
       const grid = document.getElementById('skinsGrid');
       grid.innerHTML = '';
 
-      SKINS_DATABASE.forEach(s => {
+      SKINS_DATABASE.forEach((s, idx) => {
         const isUnlocked = unlockedSkins.includes(s.id);
         const isSelected = s.id === currentSkinId;
+        const isInspecting = s.id === inspectingSkinId;
+
+        const prevSkin = idx > 0 ? SKINS_DATABASE[idx - 1] : null;
+        const isPrevUnlocked = !prevSkin || unlockedSkins.includes(prevSkin.id);
+
         const card = document.createElement('div');
-        card.className = `skin-card ${isSelected ? 'selected' : ''} ${!isUnlocked ? 'locked' : ''}`;
+        const lockClass = !isUnlocked ? (isPrevUnlocked ? 'locked' : 'chain-locked') : '';
+        card.className = `skin-card ${isSelected ? 'selected' : ''} ${isInspecting ? 'inspecting' : ''} ${lockClass}`;
         card.style.background = `linear-gradient(135deg, ${s.c1}, ${s.c3})`;
 
         card.innerHTML = `
-          <span style="font-size: 20px;">${s.symbol}</span>
+          <span style="font-size: 20px;">${!isUnlocked && !isPrevUnlocked ? '🔒' : s.symbol}</span>
           ${!isUnlocked ? `<span class="skin-cost-tag">⭐${s.cost}</span>` : ''}
         `;
 
         card.onclick = () => {
-          if (isUnlocked) {
-            currentSkinId = s.id;
-            saveSkinsPermanently();
-            SoundEngine.switchSkinBgm(s.bgm);
-            updateWardrobeUI();
-          } else if (totalStarsStored >= s.cost) {
-            totalStarsStored -= s.cost;
-            saveStarsPermanently();
-            unlockedSkins.push(s.id);
-            currentSkinId = s.id;
-            saveSkinsPermanently();
-            SoundEngine.switchSkinBgm(s.bgm);
-            updateWardrobeUI();
-          }
+          updateInspectBox(s.id);
+          updateWardrobeUI();
         };
+
         grid.appendChild(card);
       });
+
+      updateInspectBox(inspectingSkinId);
     }
 
     function openWardrobe() {
+      inspectingSkinId = currentSkinId;
       document.getElementById('modalWardrobe').classList.remove('hide');
       updateWardrobeUI();
     }
     function closeWardrobe() {
       document.getElementById('modalWardrobe').classList.add('hide');
+    }
+
+    function openGuide() {
+      document.getElementById('modalGuide').classList.remove('hide');
+    }
+    function closeGuide() {
+      document.getElementById('modalGuide').classList.add('hide');
+    }
+
+    function goToLobby() {
+      document.getElementById('screenGameOver').classList.add('hide');
+      document.getElementById('screenStart').classList.remove('hide');
+      updateWardrobeUI();
+      updateLeaderboardUI();
     }
 
     /* ================= SYNTHESIZER AUDIO ================= */
@@ -948,7 +1279,7 @@
     setMyRole(myRole);
     updateWardrobeUI();
 
-    /* ================= GAMEPLAY CORE ================= */
+    /* ================= GAMEPLAY CORE & PARTICLES ================= */
     let isPlaying = false;
     let altitude = 0;
     let sessionStars = 0;
@@ -958,6 +1289,64 @@
 
     let hasShield = false;
     let hasSafetyNet = true;
+
+    let bgPulseTime = 0;
+    const nebulaBlobs = [
+      { x: 100, y: 180, radius: 190, color: 'rgba(99, 102, 241, 0.28)', speedX: 0.25, speedY: 0.18 },
+      { x: 320, y: 460, radius: 210, color: 'rgba(236, 72, 153, 0.22)', speedX: -0.22, speedY: -0.15 },
+      { x: 200, y: 680, radius: 180, color: 'rgba(6, 182, 212, 0.24)', speedX: 0.18, speedY: -0.22 }
+    ];
+
+    let shootingStars = [];
+    function maybeSpawnShootingStar() {
+      if (Math.random() < 0.015 && shootingStars.length < 2) {
+        shootingStars.push({
+          x: Math.random() * LOGICAL_WIDTH,
+          y: Math.random() * (LOGICAL_HEIGHT * 0.4),
+          length: 50 + Math.random() * 50,
+          speed: 6 + Math.random() * 5,
+          angle: Math.PI / 4 + (Math.random() - 0.5) * 0.2,
+          opacity: 1
+        });
+      }
+    }
+
+    let auraParticles = [];
+    function emitAuraSparkles(x, y, skin) {
+      if (skin.cost < 200) return;
+      
+      const type = skin.auraType || 'spark';
+      const count = skin.cost >= 1000 ? 3 : (skin.cost >= 700 ? 2 : 1);
+
+      for (let i = 0; i < count; i++) {
+        let p = {
+          x: x + (Math.random() - 0.5) * 24,
+          y: y + (Math.random() - 0.5) * 24,
+          vx: (Math.random() - 0.5) * 1.6,
+          vy: - (1.2 + Math.random() * 2.2),
+          size: Math.random() * 3 + 1.5,
+          color: skin.aura,
+          alpha: 1,
+          decay: 0.025 + Math.random() * 0.02,
+          type: type
+        };
+
+        if (type === 'fire') {
+          p.vy = - (2 + Math.random() * 2.8);
+          p.vx = (Math.random() - 0.5) * 2.2;
+          p.color = Math.random() < 0.5 ? '#f97316' : '#ef4444';
+        } else if (type === 'lightning') {
+          p.vx = (Math.random() - 0.5) * 4;
+          p.vy = (Math.random() - 0.5) * 4;
+          p.size = 2;
+          p.color = '#38bdf8';
+        } else if (type === 'god' || type === 'rainbow') {
+          p.color = `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`;
+        }
+
+        auraParticles.push(p);
+      }
+    }
 
     const ball = {
       x: LOGICAL_WIDTH / 2,
@@ -977,13 +1366,23 @@
     let platforms = [];
     let particles = [];
     let floatTexts = [];
-    let bgStars = [];
+    let bgStarsLayer1 = [];
+    let bgStarsLayer2 = [];
 
-    for (let i = 0; i < 40; i++) {
-      bgStars.push({
+    for (let i = 0; i < 45; i++) {
+      bgStarsLayer1.push({
         x: Math.random() * LOGICAL_WIDTH,
         y: Math.random() * LOGICAL_HEIGHT,
-        size: Math.random() * 2 + 0.8
+        size: Math.random() * 1.6 + 0.8,
+        twinkleOffset: Math.random() * Math.PI * 2
+      });
+    }
+    for (let i = 0; i < 20; i++) {
+      bgStarsLayer2.push({
+        x: Math.random() * LOGICAL_WIDTH,
+        y: Math.random() * LOGICAL_HEIGHT,
+        size: Math.random() * 2.5 + 1.5,
+        twinkleOffset: Math.random() * Math.PI * 2
       });
     }
 
@@ -1019,7 +1418,7 @@
         hasRocket: !isFirst && Math.random() < 0.04,
         hasMagnet: !isFirst && Math.random() < 0.04,
         hasShield: !isFirst && Math.random() < 0.04,
-        hasStar: !isFirst && Math.random() < 0.18
+        hasStar: !isFirst && Math.random() < 0.38
       });
     }
 
@@ -1046,6 +1445,7 @@
       cameraY = 0;
       platforms = [];
       particles = [];
+      auraParticles = [];
       floatTexts = [];
 
       document.getElementById('hudAltitude').innerText = '0 m';
@@ -1115,6 +1515,30 @@
     document.getElementById('btnRestart').addEventListener('click', startGame);
 
     function update() {
+      bgPulseTime += 0.02;
+
+      nebulaBlobs.forEach(blob => {
+        blob.x += blob.speedX;
+        blob.y += blob.speedY;
+        if (blob.x < -40 || blob.x > LOGICAL_WIDTH + 40) blob.speedX *= -1;
+        if (blob.y < -40 || blob.y > LOGICAL_HEIGHT + 40) blob.speedY *= -1;
+      });
+
+      maybeSpawnShootingStar();
+      shootingStars.forEach(s => {
+        s.x += Math.cos(s.angle) * s.speed;
+        s.y += Math.sin(s.angle) * s.speed;
+        s.opacity -= 0.016;
+      });
+      shootingStars = shootingStars.filter(s => s.opacity > 0);
+
+      auraParticles.forEach(ap => {
+        ap.x += ap.vx;
+        ap.y += ap.vy;
+        ap.alpha -= ap.decay;
+      });
+      auraParticles = auraParticles.filter(ap => ap.alpha > 0);
+
       if (!isPlaying) return;
 
       const currentSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
@@ -1122,6 +1546,8 @@
       const currentGravity = ball.baseGravity * (speedMult * 0.9);
       const currentBounce = ball.baseBounce * (speedMult * 0.95);
       const moveSpeed = 4.6 * speedMult;
+
+      emitAuraSparkles(ball.x, ball.y, currentSkin);
 
       if (ball.rocketTimer > 0) {
         ball.rocketTimer--;
@@ -1142,12 +1568,13 @@
             const starY = p.y - 24;
             if (Math.hypot(ball.x - starX, ball.y - starY) < 250) {
               p.hasStar = false;
-              sessionStars++;
-              totalStarsStored++;
+              const reward = Math.random() < 0.5 ? 2 : 3;
+              sessionStars += reward;
+              totalStarsStored += reward;
               saveStarsPermanently();
               SoundEngine.star();
               document.getElementById('hudStars').innerText = totalStarsStored;
-              addFloatingText('+1', starX, starY, '#feca57');
+              addFloatingText(`+${reward} ⭐`, starX, starY, '#feca57');
             }
           }
         });
@@ -1206,12 +1633,13 @@
           const starY = p.y - 24;
           if (Math.hypot(ball.x - starX, ball.y - starY) < ball.radius + 14) {
             p.hasStar = false;
-            sessionStars++;
-            totalStarsStored++;
+            const reward = Math.random() < 0.5 ? 2 : 3;
+            sessionStars += reward;
+            totalStarsStored += reward;
             saveStarsPermanently();
             SoundEngine.star();
             document.getElementById('hudStars').innerText = totalStarsStored;
-            addFloatingText('+1 ⭐', starX, starY, '#feca57');
+            addFloatingText(`+${reward} ⭐`, starX, starY, '#feca57');
           }
         }
         if (p.type === 'moving') {
@@ -1238,7 +1666,6 @@
         }
       }
 
-      // Deteksi menyalip rekor pacar
       const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
       const partner = coupleScores[partnerKey];
       if (partner.score > 0) {
@@ -1274,16 +1701,230 @@
       }
     }
 
+    /* ================= UNIVERSAL BALL & AURA RENDERER ================= */
+    function renderBallWithAura(targetCtx, x, y, skin, isInspect = false) {
+      const radius = 17;
+      const auraType = skin.auraType || 'spark';
+
+      if (skin.cost >= 300) {
+        targetCtx.save();
+        targetCtx.translate(x, y);
+        targetCtx.globalCompositeOperation = 'screen';
+
+        if (auraType === 'lightning' || skin.cost >= 1100) {
+          targetCtx.strokeStyle = '#38bdf8';
+          targetCtx.shadowColor = '#06b6d4';
+          targetCtx.shadowBlur = 15;
+          targetCtx.lineWidth = 2;
+
+          for (let l = 0; l < 4; l++) {
+            const angle = (bgPulseTime * 5) + (l * Math.PI / 2);
+            const dist = radius + 5;
+            const tx = Math.cos(angle) * dist;
+            const ty = Math.sin(angle) * dist;
+            const midX = tx + (Math.random() - 0.5) * 12;
+            const midY = ty + (Math.random() - 0.5) * 12;
+            const endX = Math.cos(angle) * (dist + 16 + Math.random() * 8);
+            const endY = Math.sin(angle) * (dist + 16 + Math.random() * 8);
+
+            targetCtx.beginPath();
+            targetCtx.moveTo(tx, ty);
+            targetCtx.lineTo(midX, midY);
+            targetCtx.lineTo(endX, endY);
+            targetCtx.stroke();
+          }
+        }
+
+        if (auraType === 'fire' || skin.cost === 1000 || skin.cost === 1300) {
+          targetCtx.save();
+          targetCtx.rotate(Math.sin(bgPulseTime * 3) * 0.3);
+          for (let f = 0; f < 5; f++) {
+            const fAngle = (f * Math.PI * 2 / 5) + bgPulseTime * 2;
+            const fDist = radius + 7 + Math.sin(bgPulseTime * 6 + f) * 6;
+            targetCtx.fillStyle = f % 2 === 0 ? '#f97316' : '#ef4444';
+            targetCtx.shadowColor = '#ea580c';
+            targetCtx.shadowBlur = 14;
+            targetCtx.beginPath();
+            targetCtx.arc(Math.cos(fAngle) * fDist, Math.sin(fAngle) * fDist, 4 + Math.sin(bgPulseTime * 4) * 2, 0, Math.PI * 2);
+            targetCtx.fill();
+          }
+          targetCtx.restore();
+        }
+
+        if (skin.cost >= 700) {
+          targetCtx.rotate(bgPulseTime * 2.5);
+          targetCtx.strokeStyle = skin.aura;
+          targetCtx.shadowColor = skin.aura;
+          targetCtx.shadowBlur = 20;
+          targetCtx.lineWidth = 2.5;
+          targetCtx.setLineDash([12, 8]);
+          targetCtx.beginPath();
+          targetCtx.ellipse(0, 0, radius + 10, (radius + 10) * 0.42, 0, 0, Math.PI * 2);
+          targetCtx.stroke();
+
+          const satX = Math.cos(bgPulseTime * 3) * (radius + 10);
+          const satY = Math.sin(bgPulseTime * 3) * ((radius + 10) * 0.42);
+          targetCtx.fillStyle = '#ffffff';
+          targetCtx.shadowColor = '#ffffff';
+          targetCtx.shadowBlur = 12;
+          targetCtx.beginPath();
+          targetCtx.arc(satX, satY, 3.5, 0, Math.PI * 2);
+          targetCtx.fill();
+        }
+
+        if (skin.cost >= 1000) {
+          targetCtx.rotate(-bgPulseTime * 4);
+          targetCtx.strokeStyle = '#ffffff';
+          targetCtx.lineWidth = 1.8;
+          targetCtx.setLineDash([6, 12]);
+          targetCtx.beginPath();
+          targetCtx.ellipse(0, 0, radius + 16, (radius + 16) * 0.35, 0, 0, Math.PI * 2);
+          targetCtx.stroke();
+
+          const rayAngle = bgPulseTime * 1.2;
+          targetCtx.strokeStyle = skin.aura;
+          targetCtx.lineWidth = 2.8;
+          targetCtx.shadowBlur = 24;
+          for (let r = 0; r < 6; r++) {
+            const a = rayAngle + (r * Math.PI / 3);
+            targetCtx.beginPath();
+            targetCtx.moveTo(Math.cos(a) * (radius + 5), Math.sin(a) * (radius + 5));
+            targetCtx.lineTo(Math.cos(a) * (radius + 26), Math.sin(a) * (radius + 26));
+            targetCtx.stroke();
+          }
+        }
+
+        targetCtx.restore();
+      }
+
+      targetCtx.save();
+      targetCtx.translate(x, y);
+
+      targetCtx.shadowColor = skin.aura;
+      targetCtx.shadowBlur = skin.cost >= 1000 ? 36 : (skin.cost >= 700 ? 26 : 16);
+
+      const ballGrad = targetCtx.createRadialGradient(-5, -6, 2, 0, 0, radius);
+      ballGrad.addColorStop(0, skin.c1);
+      ballGrad.addColorStop(0.4, skin.c2);
+      ballGrad.addColorStop(1, skin.c3);
+      targetCtx.fillStyle = ballGrad;
+      targetCtx.beginPath();
+      targetCtx.arc(0, 0, radius, 0, Math.PI * 2);
+      targetCtx.fill();
+
+      if (skin.cost >= 700) {
+        targetCtx.fillStyle = 'rgba(255, 255, 255, 0.45)';
+        targetCtx.beginPath();
+        targetCtx.ellipse(-4, -6, 7, 3.5, -Math.PI / 4, 0, Math.PI * 2);
+        targetCtx.fill();
+      }
+
+      targetCtx.shadowBlur = 0;
+      targetCtx.font = '12px sans-serif';
+      targetCtx.textAlign = 'center';
+      targetCtx.fillText(skin.symbol, 0, -radius + 2);
+
+      targetCtx.fillStyle = '#fff';
+      targetCtx.beginPath();
+      targetCtx.arc(-5, -2, 4, 0, Math.PI * 2);
+      targetCtx.arc(5, -2, 4, 0, Math.PI * 2);
+      targetCtx.fill();
+      targetCtx.fillStyle = '#000';
+      targetCtx.beginPath();
+      targetCtx.arc(-5, -2, 2, 0, Math.PI * 2);
+      targetCtx.arc(5, -2, 2, 0, Math.PI * 2);
+      targetCtx.fill();
+
+      targetCtx.restore();
+    }
+
+    function drawPreviews() {
+      const heroCanvas = document.getElementById('heroPreviewCanvas');
+      if (heroCanvas) {
+        const hctx = heroCanvas.getContext('2d');
+        hctx.clearRect(0, 0, heroCanvas.width, heroCanvas.height);
+        const curSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
+        
+        hctx.fillStyle = 'rgba(0,0,0,0.5)';
+        hctx.beginPath();
+        hctx.ellipse(80, 95, 38, 8, 0, 0, Math.PI * 2);
+        hctx.fill();
+
+        const floatY = 56 + Math.sin(bgPulseTime * 2) * 8;
+        renderBallWithAura(hctx, 80, floatY, curSkin);
+      }
+
+      const inspectCanvas = document.getElementById('inspectPreviewCanvas');
+      const modalWardrobe = document.getElementById('modalWardrobe');
+      if (inspectCanvas && !modalWardrobe.classList.contains('hide')) {
+        const ictx = inspectCanvas.getContext('2d');
+        ictx.clearRect(0, 0, inspectCanvas.width, inspectCanvas.height);
+        const inspSkin = SKINS_DATABASE.find(s => s.id === inspectingSkinId) || SKINS_DATABASE[0];
+
+        ictx.fillStyle = 'rgba(0,0,0,0.6)';
+        ictx.beginPath();
+        ictx.ellipse(80, 80, 35, 7, 0, 0, Math.PI * 2);
+        ictx.fill();
+
+        const floatY = 46 + Math.sin(bgPulseTime * 2.5) * 6;
+        renderBallWithAura(ictx, 80, floatY, inspSkin, true);
+      }
+    }
+
     function draw() {
-      ctx.fillStyle = '#070913';
+      const pulse = Math.sin(bgPulseTime) * 0.5 + 0.5;
+      const grad = ctx.createLinearGradient(0, 0, 0, LOGICAL_HEIGHT);
+      grad.addColorStop(0, `rgb(${Math.floor(15 + pulse * 10)}, ${Math.floor(20 + pulse * 8)}, ${Math.floor(55 + pulse * 20)})`);
+      grad.addColorStop(0.5, `rgb(${Math.floor(10 + pulse * 8)}, ${Math.floor(12 + pulse * 10)}, ${Math.floor(32 + pulse * 15)})`);
+      grad.addColorStop(1, '#050713');
+      ctx.fillStyle = grad;
       ctx.fillRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
 
-      bgStars.forEach(s => {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
-        ctx.fillRect(s.x, (s.y + cameraY * 0.15) % LOGICAL_HEIGHT, s.size, s.size);
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      nebulaBlobs.forEach(blob => {
+        const radGrad = ctx.createRadialGradient(blob.x, blob.y, 0, blob.x, blob.y, blob.radius);
+        radGrad.addColorStop(0, blob.color);
+        radGrad.addColorStop(1, 'transparent');
+        ctx.fillStyle = radGrad;
+        ctx.beginPath();
+        ctx.arc(blob.x, blob.y, blob.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+      ctx.restore();
+
+      bgStarsLayer1.forEach(s => {
+        const twinkle = Math.sin(bgPulseTime * 2 + s.twinkleOffset) * 0.4 + 0.6;
+        ctx.fillStyle = `rgba(255, 255, 255, ${twinkle * 0.45})`;
+        ctx.beginPath();
+        ctx.arc(s.x, (s.y + cameraY * 0.08) % LOGICAL_HEIGHT, s.size, 0, Math.PI * 2);
+        ctx.fill();
       });
 
-      // GARIS REKOR PACAR
+      bgStarsLayer2.forEach(s => {
+        const twinkle = Math.sin(bgPulseTime * 3 + s.twinkleOffset) * 0.3 + 0.7;
+        ctx.fillStyle = `rgba(224, 231, 255, ${twinkle * 0.8})`;
+        ctx.shadowColor = 'rgba(199, 210, 254, 0.8)';
+        ctx.shadowBlur = 6;
+        ctx.beginPath();
+        ctx.arc(s.x, (s.y + cameraY * 0.22) % LOGICAL_HEIGHT, s.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      });
+
+      shootingStars.forEach(s => {
+        ctx.save();
+        ctx.strokeStyle = `rgba(255, 255, 255, ${s.opacity})`;
+        ctx.lineWidth = 2;
+        ctx.shadowColor = '#a5b4fc';
+        ctx.shadowBlur = 8;
+        ctx.beginPath();
+        ctx.moveTo(s.x, s.y);
+        ctx.lineTo(s.x - Math.cos(s.angle) * s.length, s.y - Math.sin(s.angle) * s.length);
+        ctx.stroke();
+        ctx.restore();
+      });
+
       const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
       const partner = coupleScores[partnerKey];
       if (partner.score > 0) {
@@ -1350,6 +1991,32 @@
         }
       });
 
+      auraParticles.forEach(ap => {
+        ctx.save();
+        ctx.globalAlpha = ap.alpha;
+        ctx.fillStyle = ap.color;
+        ctx.shadowColor = ap.color;
+        ctx.shadowBlur = 10;
+
+        if (ap.type === 'fire') {
+          ctx.beginPath();
+          ctx.arc(ap.x, ap.y, ap.size, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (ap.type === 'lightning') {
+          ctx.strokeStyle = '#fff';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(ap.x, ap.y);
+          ctx.lineTo(ap.x + (Math.random() - 0.5) * 8, ap.y + (Math.random() - 0.5) * 8);
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(ap.x, ap.y, ap.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      });
+
       ball.trail.forEach(t => {
         ctx.save();
         ctx.fillStyle = t.color;
@@ -1374,48 +2041,24 @@
 
       const skin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
 
-      ctx.save();
-      ctx.translate(ball.x, ball.y);
-      ctx.scale(ball.squishX, ball.squishY);
-
       if (hasShield) {
         ctx.save();
         ctx.strokeStyle = '#38bdf8';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.arc(0, 0, ball.radius + 8, 0, Math.PI * 2);
+        ctx.arc(ball.x, ball.y, ball.radius + 8, 0, Math.PI * 2);
         ctx.stroke();
         ctx.restore();
       }
 
-      ctx.shadowColor = skin.aura;
-      ctx.shadowBlur = 16;
-      const grad = ctx.createRadialGradient(-5, -6, 2, 0, 0, ball.radius);
-      grad.addColorStop(0, skin.c1);
-      grad.addColorStop(0.4, skin.c2);
-      grad.addColorStop(1, skin.c3);
-      ctx.fillStyle = grad;
-      ctx.beginPath();
-      ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.shadowBlur = 0;
-      ctx.font = '12px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.fillText(skin.symbol, 0, -ball.radius + 2);
-
-      ctx.fillStyle = '#fff';
-      ctx.beginPath();
-      ctx.arc(-5, -2, 4, 0, Math.PI * 2);
-      ctx.arc(5, -2, 4, 0, Math.PI * 2);
-      ctx.fill();
-      ctx.fillStyle = '#000';
-      ctx.beginPath();
-      ctx.arc(-5, -2, 2, 0, Math.PI * 2);
-      ctx.arc(5, -2, 2, 0, Math.PI * 2);
-      ctx.fill();
-
+      ctx.save();
+      ctx.translate(ball.x, ball.y);
+      ctx.scale(ball.squishX, ball.squishY);
+      ctx.translate(-ball.x, -ball.y);
+      renderBallWithAura(ctx, ball.x, ball.y, skin);
       ctx.restore();
+
+      drawPreviews();
 
       requestAnimationFrame(() => {
         update();
