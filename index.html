@@ -113,31 +113,33 @@
       box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
     }
 
-    /* Screen Overlays */
+    /* Screen Overlays (Bisa Discroll ke Bawah) */
     .screen-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at 50% 20%, rgba(20, 26, 56, 0.85) 0%, rgba(5, 7, 18, 0.92) 100%);
+      background: radial-gradient(circle at 50% 20%, rgba(20, 26, 56, 0.88) 0%, rgba(5, 7, 18, 0.95) 100%);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: space-between;
-      padding: 24px 20px 22px;
+      padding: 22px 18px 20px;
       z-index: 10;
       text-align: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
     .hero-podium {
       position: relative;
       width: 100%;
-      height: 120px;
+      height: 110px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: 2px;
+      margin: 4px 0;
+      flex-shrink: 0;
     }
 
     canvas.preview-canvas {
@@ -146,7 +148,7 @@
     }
 
     .title-banner {
-      font-size: 29px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: -0.8px;
       line-height: 1.1;
@@ -161,6 +163,7 @@
       color: #94a3b8;
       font-weight: 500;
       margin-top: 2px;
+      margin-bottom: 8px;
     }
 
     .leaderboard-card {
@@ -172,6 +175,8 @@
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
       position: relative;
       overflow: hidden;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .leaderboard-header {
@@ -223,6 +228,8 @@
       display: flex;
       flex-direction: column;
       gap: 5px;
+      margin-bottom: 10px;
+      flex-shrink: 0;
     }
 
     .role-section-label {
@@ -276,6 +283,8 @@
       display: flex;
       flex-direction: column;
       gap: 7px;
+      margin-bottom: 5px;
+      flex-shrink: 0;
     }
 
     .btn-row {
@@ -288,21 +297,27 @@
       background: rgba(255, 255, 255, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.12);
       color: #f1f5f9;
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 800;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-radius: 16px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 6px;
+      gap: 5px;
       transition: all 0.2s;
     }
 
     .btn-secondary:active {
       transform: scale(0.97);
       background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-donate {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.18), rgba(217, 119, 6, 0.25));
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      color: #fcd34d;
     }
 
     .btn-primary {
@@ -554,6 +569,36 @@
       font-weight: 700;
     }
 
+    .donate-content-box {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .qr-frame {
+      background: #ffffff;
+      padding: 12px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px rgba(245, 158, 11, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 200px;
+      height: 200px;
+    }
+
+    .qr-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
     .skins-scroll-area {
       flex: 1;
       overflow-y: auto;
@@ -634,7 +679,7 @@
       </div>
     </div>
 
-    <!-- START SCREEN -->
+    <!-- START SCREEN (BISA DICROLL) -->
     <div id="screenStart" class="screen-overlay">
       <div>
         <h1 class="title-banner">SUPER BOUNCE</h1>
@@ -677,12 +722,36 @@
             <span>👗</span> Skin (<span id="btnSkinCountText">1/30</span>)
           </button>
           <button class="btn-secondary" style="flex:1;" onclick="openGuide()">
-            <span>📖</span> Panduan & Fitur
+            <span>📖</span> Panduan
+          </button>
+          <button class="btn-secondary btn-donate" style="flex:1.1;" onclick="openDonate()">
+            <span>☕</span> Donasi
           </button>
         </div>
         <button id="btnStart" class="btn-primary">
           Mulai Meluncur 🚀
         </button>
+      </div>
+    </div>
+
+    <!-- MODAL DONASI / QRIS (Menggunakan file qris.png) -->
+    <div id="modalDonate" class="app-modal hide">
+      <div class="modal-header">
+        <div>
+          <h2 style="font-size: 18px; color: #fcd34d; font-weight:800;">DUKUNG DEVELOPER</h2>
+          <span style="font-size: 11px; color: #94a3b8;">Support untuk kopi & update server</span>
+        </div>
+        <button class="close-btn" onclick="closeDonate()">✕</button>
+      </div>
+
+      <div class="donate-content-box">
+        <div class="qr-frame">
+          <img id="donateQrImg" src="qris.png" alt="QRIS Donasi" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=Terima+Kasih+Atas+Dukungannya!'" />
+        </div>
+        <p style="font-size: 13px; color: #f1f5f9; font-weight: 700;">Scan QRIS via DANA / GoPay / OVO / Bank</p>
+        <p style="font-size: 11.5px; color: #94a3b8; max-width: 280px; line-height: 1.5;">
+          Setiap donasi sangat berarti agar game couple ini bisa terus online dan di-update fitur-fitur seru lainnya! ❤️
+        </p>
       </div>
     </div>
 
@@ -718,7 +787,7 @@
           <div class="guide-card-title">👗 Koleksi 30 Skin & Audio Eksklusif</div>
           <div class="guide-card-text">
             • <b>Beli Berjenjang:</b> Skin wajib dibuka berurutan satu per satu dari kiri ke kanan.<br>
-            • <b>Audio Preview Bersih:</b> Saat kamu memilih skin lain di lemari, musik latar sebelumnya **otomatis mati total**, dan hanya suara khas skin yang kamu pilih saja yang terdengar bersih tanpa tabrakan!
+            • <b>Preview Suara Live:</b> Saat kamu memilih skin lain di lemari, musik latar sebelumnya **otomatis mati total**, dan hanya suara khas skin yang kamu pilih saja yang terdengar bersih tanpa tabrakan!
           </div>
         </div>
 
@@ -776,7 +845,7 @@
       <div class="skins-scroll-area" id="skinsGrid"></div>
     </div>
 
-    <!-- GAME OVER SCREEN -->
+    <!-- GAME OVER SCREEN (BISA DICROLL) -->
     <div id="screenGameOver" class="screen-overlay hide">
       <div>
         <div style="font-size: 38px; margin-bottom: 2px;">🌠</div>
@@ -923,7 +992,6 @@
         btnAction.innerText = `Bintang Kurang (Kurang ${s.cost - totalStarsStored} ⭐)`;
       }
 
-      // Preview Audio Eksklusif Tanpa Tabrakan Musik Sebelumnya
       SoundEngine.playPreviewSound(s.sfx, s.bgm);
     }
 
@@ -1015,6 +1083,13 @@
       document.getElementById('modalGuide').classList.add('hide');
     }
 
+    function openDonate() {
+      document.getElementById('modalDonate').classList.remove('hide');
+    }
+    function closeDonate() {
+      document.getElementById('modalDonate').classList.add('hide');
+    }
+
     function goToLobby() {
       document.getElementById('screenGameOver').classList.add('hide');
       document.getElementById('screenStart').classList.remove('hide');
@@ -1038,7 +1113,6 @@
         this.init();
         if (!audioCtx) return;
 
-        // 1. Matikan suara efek sfx sebelumnya agar tidak bertabrakan
         try {
           if (activeSfxOsc) {
             activeSfxOsc.stop();
@@ -1092,7 +1166,6 @@
         activeSfxOsc.start(now);
         activeSfxOsc.stop(now + 0.22);
 
-        // 2. Ganti BGM preview secara bersih (BGM lama di-clear total)
         this.switchSkinBgm(bgmTheme);
       },
 
@@ -1183,7 +1256,6 @@
         this.init();
         if (!audioCtx) return;
         
-        // Hentikan BGM sebelumnya secara total tanpa sisa tabrakan
         if (bgmTimer) {
           clearInterval(bgmTimer);
           bgmTimer = null;
@@ -1208,7 +1280,7 @@
           osc.start();
           osc.stop(now + 0.3);
           step++;
-        }, 500);
+        }, 450);
       }
     };
 
