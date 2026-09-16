@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Super Bounce: 100% Realtime Couple 🏀❤️</title>
+  <title>Super Bounce: Couple Realtime Tracker 🏀❤️</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
   <style>
     * {
@@ -44,7 +44,7 @@
       display: block;
     }
 
-    /* Top HUD */
+    /* Top Floating HUD */
     .hud-layer {
       position: absolute;
       top: 0;
@@ -52,10 +52,16 @@
       width: 100%;
       padding: 16px 18px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
+      flex-direction: column;
+      gap: 8px;
       pointer-events: none;
       z-index: 5;
+    }
+
+    .hud-top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
     .hud-pill {
@@ -71,6 +77,21 @@
       gap: 6px;
       font-size: 14px;
       font-weight: 800;
+    }
+
+    .target-tracker-pill {
+      align-self: center;
+      background: rgba(255, 117, 140, 0.2);
+      border: 1px solid rgba(255, 117, 140, 0.4);
+      color: #ffd2dc;
+      border-radius: 14px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      backdrop-filter: blur(10px);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
     /* Screen Overlays */
@@ -90,7 +111,7 @@
     }
 
     .title-banner {
-      font-size: 32px;
+      font-size: 30px;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1.1;
@@ -133,8 +154,24 @@
       font-size: 13px;
       font-weight: 800;
       outline: none;
-      width: 140px;
+      width: 130px;
       text-align: center;
+      text-transform: uppercase;
+    }
+
+    .btn-connect {
+      background: rgba(56, 189, 248, 0.15);
+      border: 1px solid #38bdf8;
+      color: #38bdf8;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-connect:active {
+      transform: scale(0.95);
     }
 
     /* Leaderboard */
@@ -177,6 +214,16 @@
       background: rgba(254, 202, 87, 0.08);
     }
 
+    .gap-badge {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 14px;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 12px;
+      color: #cbd5e1;
+    }
+
     .live-dot {
       display: inline-block;
       width: 8px;
@@ -201,27 +248,34 @@
 
     <!-- Top Floating HUD -->
     <div class="hud-layer">
-      <div class="hud-pill">
-        <span id="hudPlayerBadge" style="color: #ff7675;">Player</span>
-        <span id="hudAltitude" style="margin-left:4px; font-size:16px; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">0 m</span>
+      <div class="hud-top-row">
+        <div class="hud-pill">
+          <span id="hudPlayerBadge" style="color: #ff7675;">👑 Aku</span>
+          <span id="hudAltitude" style="margin-left:4px; font-size:16px; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">0 m</span>
+        </div>
+        <div class="hud-pill" style="border-color: rgba(254, 202, 87, 0.3);">
+          <span style="font-size: 15px;">⭐</span>
+          <span id="hudStars" style="color: #feca57;">0</span>
+        </div>
       </div>
-      <div class="hud-pill" style="border-color: rgba(254, 202, 87, 0.3);">
-        <span style="font-size: 15px;">⭐</span>
-        <span id="hudStars" style="color: #feca57;">0</span>
+
+      <!-- Tracker Live Posisi Pacar -->
+      <div id="targetTrackerHud" class="target-tracker-pill hide">
+        <span id="targetTrackerText">💖 Pacarku: 0m</span>
       </div>
     </div>
 
     <!-- START SCREEN -->
     <div id="screenStart" class="screen-overlay">
-      <div style="font-size: 36px; margin-bottom: 2px;">❤️🏀❤️</div>
+      <div style="font-size: 34px; margin-bottom: 2px;">❤️🏀❤️</div>
       <h1 class="title-banner">COUPLE REALTIME</h1>
-      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">Skor langsung sinkron detik itu juga antar HP!</p>
+      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 12px;">Skor otomatis tersambung live antar HP!</p>
 
       <!-- Kode Pasangan (Room ID) -->
       <div class="room-box">
         <span style="font-size: 12px; color: #cbd5e1; font-weight: 800;">KODE KITA:</span>
-        <input type="text" id="roomInput" class="room-input" value="KITA2026" maxlength="10">
-        <button onclick="changeRoom()" style="background:none; border:1px solid #38bdf8; color:#38bdf8; border-radius:10px; padding:5px 8px; font-size:11px; font-weight:800; cursor:pointer;">Hubungkan</button>
+        <input type="text" id="roomInput" class="room-input" value="KITA2026" maxlength="12">
+        <button id="btnConnect" class="btn-connect" onclick="connectRoom()">Hubungkan</button>
       </div>
 
       <!-- Leaderboard Realtime Card -->
@@ -229,13 +283,13 @@
         <div class="leaderboard-title">
           <span>🏆 Papan Skor Bersama</span>
           <span style="display:flex; align-items:center; gap:4px; font-size:10px; color:#22c55e;">
-            <span class="live-dot"></span> LIVE CLOUD
+            <span class="live-dot"></span> <span id="statusLiveText">LIVE SYNC</span>
           </span>
         </div>
         <div id="rankList"></div>
       </div>
 
-      <!-- Pilih Siapa yang Memegang HP ini -->
+      <!-- Pilih Profil HP ini -->
       <div style="font-size: 12px; color: #cbd5e1; font-weight: 800; margin-bottom: 6px;">HP INI MILIK:</div>
       <div style="display:flex; gap:10px; margin-bottom: 16px;">
         <button id="btnRoleP1" class="action-btn" style="padding:8px 18px; font-size:13px;" onclick="setMyRole('p1')">👑 Aku</button>
@@ -249,9 +303,12 @@
     <div id="screenGameOver" class="screen-overlay hide">
       <div style="font-size: 38px; margin-bottom: 4px;">🌠</div>
       <h1 class="title-banner" style="background: linear-gradient(135deg, #ff7675, #fab1a0); -webkit-background-clip: text;">RONDE SELESAI</h1>
-      <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-bottom: 12px;">
+      
+      <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-bottom: 6px;">
         Ketinggian: 0 m
       </p>
+
+      <div id="gapBadge" class="gap-badge">Memeriksa rekor...</div>
 
       <div class="leaderboard-card">
         <div class="leaderboard-title">
@@ -263,7 +320,7 @@
         <div id="rankListGameOver"></div>
       </div>
 
-      <button id="btnRestart" class="action-btn" style="margin-top: 10px;">Lompat Lagi 🔁</button>
+      <button id="btnRestart" class="action-btn" style="margin-top: 6px;">Lompat Lagi 🔁</button>
     </div>
   </div>
 
@@ -309,28 +366,100 @@
       bounce() { this.playTone(220, 560, 'sine', 0.14, 0.35); },
       spring() { this.playTone(280, 1100, 'triangle', 0.3, 0.45); },
       star() { this.playTone(900, 1500, 'sine', 0.15, 0.3); },
+      overtake() {
+        if (!audioCtx) return;
+        [523, 659, 783, 1046].forEach((f, i) => {
+          setTimeout(() => this.playTone(f, f + 50, 'triangle', 0.2, 0.4), i * 100);
+        });
+      },
       fall() { this.playTone(400, 60, 'sawtooth', 0.5, 0.3); }
     };
 
-    /* ================= SISTEM DATABASE REALTIME (FIREBASE OPEN CLOUD) ================= */
-    // Database Cloud Publik (REST API) - sinkron antar HP mana pun di seluruh dunia
-    const FIREBASE_BASE_URL = "https://superbounce-couple-default-rtdb.firebaseio.com/couples/";
-
+    /* ================= SISTEM WEBSOCKET REALTIME (100% BEBAS MACET) ================= */
     let currentRoom = localStorage.getItem('bounce_room_id') || 'KITA2026';
     document.getElementById('roomInput').value = currentRoom;
 
-    let myRole = localStorage.getItem('bounce_my_role') || 'p1'; // 'p1' = Aku, 'p2' = Pacarku
+    let myRole = localStorage.getItem('bounce_my_role') || 'p1';
 
-    let coupleScores = {
+    let coupleScores = JSON.parse(localStorage.getItem('couple_scores_cache_v2') || JSON.stringify({
       p1: { name: 'Aku', avatar: '👑', score: 0 },
       p2: { name: 'Pacarku', avatar: '💖', score: 0 }
-    };
+    }));
 
-    function changeRoom() {
+    let ws = null;
+
+    function initRealtimeSocket() {
+      if (ws) {
+        try { ws.close(); } catch(e) {}
+      }
+
+      const topic = `gamebounce_${currentRoom.toLowerCase()}`;
+      try {
+        ws = new WebSocket(`wss://ntfy.sh/${topic}/ws`);
+
+        ws.onopen = () => {
+          document.getElementById('statusLiveText').innerText = "LIVE SYNC";
+          document.getElementById('statusLiveText').style.color = "#22c55e";
+          broadcastMyScore(); // Kirim skor saat ini ke pasangan
+        };
+
+        ws.onmessage = (event) => {
+          try {
+            const res = JSON.parse(event.data);
+            if (res && res.message) {
+              const payload = JSON.parse(res.message);
+              if (payload && payload.role && payload.score !== undefined) {
+                // Jika data yang masuk dari role pacar, perbarui tampilan secara instan!
+                if (payload.score > coupleScores[payload.role].score) {
+                  coupleScores[payload.role].score = payload.score;
+                  localStorage.setItem('couple_scores_cache_v2', JSON.stringify(coupleScores));
+                  updateLeaderboardUI();
+                }
+              }
+            }
+          } catch(err) {}
+        };
+
+        ws.onerror = () => {
+          document.getElementById('statusLiveText').innerText = "OFFLINE SYNC";
+          document.getElementById('statusLiveText').style.color = "#feca57";
+        };
+      } catch(err) {}
+    }
+
+    function broadcastMyScore() {
+      const topic = `gamebounce_${currentRoom.toLowerCase()}`;
+      const payload = {
+        role: myRole,
+        score: coupleScores[myRole].score,
+        time: Date.now()
+      };
+      
+      try {
+        fetch(`https://ntfy.sh/${topic}`, {
+          method: 'POST',
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+      } catch(e) {}
+    }
+
+    function connectRoom() {
+      const btn = document.getElementById('btnConnect');
       const val = document.getElementById('roomInput').value.trim().toUpperCase() || 'KITA2026';
       currentRoom = val;
       localStorage.setItem('bounce_room_id', currentRoom);
-      fetchRealtimeScore();
+
+      btn.innerText = "Tersambung! ✅";
+      btn.style.color = "#22c55e";
+      btn.style.borderColor = "#22c55e";
+
+      initRealtimeSocket();
+
+      setTimeout(() => {
+        btn.innerText = "Hubungkan";
+        btn.style.color = "#38bdf8";
+        btn.style.borderColor = "#38bdf8";
+      }, 1500);
     }
 
     function setMyRole(role) {
@@ -339,44 +468,8 @@
       document.getElementById('btnRoleP1').style.opacity = role === 'p1' ? '1' : '0.5';
       document.getElementById('btnRoleP2').style.opacity = role === 'p2' ? '1' : '0.5';
       updateLeaderboardUI();
+      broadcastMyScore();
     }
-
-    // 1. Tarik data dari Cloud
-    async function fetchRealtimeScore() {
-      try {
-        const res = await fetch(`${FIREBASE_BASE_URL}${currentRoom}.json`);
-        const data = await res.json();
-        if (data) {
-          if (data.p1) coupleScores.p1 = data.p1;
-          if (data.p2) coupleScores.p2 = data.p2;
-          updateLeaderboardUI();
-        } else {
-          // Jika room baru, inisialisasi ke server
-          uploadScoreToCloud(0);
-        }
-      } catch(err) {
-        console.log("Offline mode, using cached data");
-      }
-    }
-
-    // 2. Kirim skor baru ke Cloud secara instan
-    async function uploadScoreToCloud(score) {
-      if (score > coupleScores[myRole].score) {
-        coupleScores[myRole].score = score;
-      }
-      try {
-        await fetch(`${FIREBASE_BASE_URL}${currentRoom}/${myRole}.json`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(coupleScores[myRole])
-        });
-        updateLeaderboardUI();
-      } catch(err) {}
-    }
-
-    // Polling Real-time: Cek data dari HP pacar otomatis setiap 3 detik
-    setInterval(fetchRealtimeScore, 3000);
-    fetchRealtimeScore();
 
     function updateLeaderboardUI() {
       const players = [
@@ -412,6 +505,7 @@
     }
 
     setMyRole(myRole);
+    initRealtimeSocket();
 
     /* ================= GAMEPLAY CORE ================= */
     let isPlaying = false;
@@ -419,6 +513,7 @@
     let stars = 0;
     let cameraY = 0;
     let speedMult = 1.0;
+    let hasOvertakenPartner = false;
 
     const ball = {
       x: LOGICAL_WIDTH / 2,
@@ -433,6 +528,8 @@
     };
 
     let platforms = [];
+    let particles = [];
+    let floatTexts = [];
     let bgStars = [];
 
     for (let i = 0; i < 40; i++) {
@@ -476,8 +573,13 @@
       });
     }
 
+    function addFloatingText(text, x, y, color = '#ffd32a') {
+      floatTexts.push({ text, x, y, alpha: 1, color });
+    }
+
     function initGame() {
       speedMult = 1.0;
+      hasOvertakenPartner = false;
       ball.x = LOGICAL_WIDTH / 2;
       ball.y = LOGICAL_HEIGHT - 140;
       ball.vx = 0;
@@ -486,10 +588,22 @@
       stars = 0;
       cameraY = 0;
       platforms = [];
+      particles = [];
+      floatTexts = [];
 
       document.getElementById('hudAltitude').innerText = '0 m';
       document.getElementById('hudStars').innerText = '0';
       document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
+
+      const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
+      const partner = coupleScores[partnerKey];
+      const targetHud = document.getElementById('targetTrackerHud');
+      if (partner.score > 0) {
+        targetHud.classList.remove('hide');
+        document.getElementById('targetTrackerText').innerText = `Target ${partner.name}: ${partner.score}m`;
+      } else {
+        targetHud.classList.add('hide');
+      }
 
       spawnPlatform(LOGICAL_HEIGHT - 60, true);
       for (let y = LOGICAL_HEIGHT - 140; y > -100; y -= 85) spawnPlatform(y);
@@ -503,16 +617,31 @@
       isPlaying = true;
     }
 
-    async function gameOver() {
+    function gameOver() {
       isPlaying = false;
       Sfx.fall();
 
       const finalAlt = Math.floor(altitude);
       const isNew = finalAlt > coupleScores[myRole].score;
 
-      // Upload langsung ke cloud detik itu juga
       if (isNew) {
-        uploadScoreToCloud(finalAlt);
+        coupleScores[myRole].score = finalAlt;
+        localStorage.setItem('couple_scores_cache_v2', JSON.stringify(coupleScores));
+        broadcastMyScore(); // Kirim ke pacar secara instan
+      }
+
+      const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
+      const partner = coupleScores[partnerKey];
+      const gapBadge = document.getElementById('gapBadge');
+
+      if (partner.score === 0) {
+        gapBadge.innerHTML = `Pacarmu belum memasang rekor. Kamu yang pertama! 🚀`;
+      } else if (finalAlt > partner.score) {
+        gapBadge.innerHTML = `🎉 <b>Kamu Memimpin!</b> Unggul <b>+${finalAlt - partner.score}m</b> dari ${partner.name}!`;
+        gapBadge.style.color = "#feca57";
+      } else {
+        gapBadge.innerHTML = `⚡ Tertinggal <b>-${partner.score - finalAlt}m</b> di bawah rekor ${partner.name}.`;
+        gapBadge.style.color = "#ff7675";
       }
 
       document.getElementById('statsText').innerHTML = `
@@ -520,6 +649,7 @@
         ${isNew ? '<br><span style="color:#feca57;font-weight:900;">🎉 REKOR BARU TERSINKRON! 🎉</span>' : ''}
       `;
 
+      updateLeaderboardUI();
       document.getElementById('screenGameOver').classList.remove('hide');
     }
 
@@ -592,6 +722,8 @@
         document.getElementById('hudAltitude').innerText = `${Math.floor(altitude)} m`;
 
         platforms.forEach(p => p.y += diff);
+        floatTexts.forEach(t => t.y += diff);
+
         platforms = platforms.filter(p => p.y < LOGICAL_HEIGHT + 40);
 
         while (platforms.length < 10) {
@@ -599,6 +731,27 @@
           spawnPlatform(highestY - (70 + Math.random() * 25));
         }
       }
+
+      // Deteksi menyalip rekor pacar
+      const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
+      const partner = coupleScores[partnerKey];
+      if (partner.score > 0) {
+        const remaining = partner.score - Math.floor(altitude);
+        if (remaining > 0) {
+          document.getElementById('targetTrackerText').innerText = `Target ${partner.name}: ${partner.score}m (Sisa ${remaining}m!)`;
+        } else if (!hasOvertakenPartner) {
+          hasOvertakenPartner = true;
+          Sfx.overtake();
+          addFloatingText(`MENYALIP ${partner.name}! 🎉`, ball.x, ball.y - 40, '#ff758c');
+          document.getElementById('targetTrackerText').innerText = `🎉 KAMU UNGGUL DI ATAS ${partner.name}!`;
+        }
+      }
+
+      floatTexts.forEach(ft => {
+        ft.y -= 1.2;
+        ft.alpha -= 0.02;
+      });
+      floatTexts = floatTexts.filter(ft => ft.alpha > 0);
 
       if (ball.y - ball.radius > LOGICAL_HEIGHT) gameOver();
     }
@@ -611,6 +764,42 @@
         ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
         ctx.fillRect(s.x, (s.y + cameraY * 0.15) % LOGICAL_HEIGHT, s.size, s.size);
       });
+
+      // GARIS PENANDA REKOR PACAR
+      const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
+      const partner = coupleScores[partnerKey];
+      if (partner.score > 0) {
+        const partnerScreenY = (LOGICAL_HEIGHT * 0.42) + (altitude * 10) - (partner.score * 10);
+        
+        if (partnerScreenY > -30 && partnerScreenY < LOGICAL_HEIGHT + 30) {
+          ctx.save();
+          ctx.strokeStyle = '#ff758c';
+          ctx.lineWidth = 2.5;
+          ctx.shadowColor = '#ff758c';
+          ctx.shadowBlur = 10;
+          ctx.setLineDash([8, 6]);
+          ctx.beginPath();
+          ctx.moveTo(0, partnerScreenY);
+          ctx.lineTo(LOGICAL_WIDTH, partnerScreenY);
+          ctx.stroke();
+
+          ctx.fillStyle = '#ff758c';
+          ctx.font = '800 13px Plus Jakarta Sans';
+          ctx.textAlign = 'right';
+          ctx.fillText(`${partner.avatar} Rekor ${partner.name}: ${partner.score}m`, LOGICAL_WIDTH - 15, partnerScreenY - 6);
+
+          ctx.beginPath();
+          ctx.arc(35, partnerScreenY - 14, 12, 0, Math.PI * 2);
+          ctx.fillStyle = '#ff758c';
+          ctx.fill();
+          ctx.fillStyle = '#fff';
+          ctx.font = '10px sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(partner.avatar, 35, partnerScreenY - 10);
+
+          ctx.restore();
+        }
+      }
 
       platforms.forEach(p => {
         ctx.fillStyle = p.type === 'moving' ? '#38bdf8' : '#34d399';
@@ -628,15 +817,30 @@
         }
       });
 
+      floatTexts.forEach(ft => {
+        ctx.save();
+        ctx.globalAlpha = ft.alpha;
+        ctx.font = '900 16px Plus Jakarta Sans';
+        ctx.fillStyle = ft.color;
+        ctx.shadowColor = ft.color;
+        ctx.shadowBlur = 10;
+        ctx.textAlign = 'center';
+        ctx.fillText(ft.text, ft.x, ft.y);
+        ctx.restore();
+      });
+
       ctx.save();
       ctx.translate(ball.x, ball.y);
       ctx.scale(ball.squishX, ball.squishY);
       ctx.fillStyle = myRole === 'p1' ? '#38bdf8' : '#ff758c';
+      ctx.shadowColor = myRole === 'p1' ? '#38bdf8' : '#ff758c';
+      ctx.shadowBlur = 15;
       ctx.beginPath();
       ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
       ctx.fill();
 
       // Mata Bola
+      ctx.shadowBlur = 0;
       ctx.fillStyle = '#fff';
       ctx.beginPath();
       ctx.arc(-5, -3, 4, 0, Math.PI * 2);
