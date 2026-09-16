@@ -3,9 +3,23 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Super Bounce: 30 Skins & Permanent Save 🏀✨</title>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
+  <title>Super Bounce: Couple Edition 🏀✨</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg-dark: #070913;
+      --card-bg: rgba(255, 255, 255, 0.04);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.45);
+      --gold: #f59e0b;
+      --gold-glow: rgba(245, 158, 11, 0.4);
+      --pink: #ec4899;
+      --cyan: #06b6d4;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -13,11 +27,11 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: none;
-      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-family: 'Outfit', sans-serif;
     }
 
     body {
-      background: radial-gradient(circle at top, #0f172a 0%, #020617 100%);
+      background: radial-gradient(circle at 50% 10%, #151936 0%, #060813 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -28,11 +42,14 @@
     #game-container {
       position: relative;
       width: 430px;
-      height: 740px;
-      border-radius: 36px;
-      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(255, 255, 255, 0.12);
+      height: 760px;
+      border-radius: 40px;
+      box-shadow: 
+        0 25px 60px -10px rgba(0, 0, 0, 0.9),
+        0 0 0 1px rgba(255, 255, 255, 0.12),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
       overflow: hidden;
-      background: #020617;
+      background: var(--bg-dark);
     }
 
     canvas {
@@ -50,10 +67,10 @@
       top: 0;
       left: 0;
       width: 100%;
-      padding: 16px 18px;
+      padding: 18px 20px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       pointer-events: none;
       z-index: 5;
     }
@@ -65,126 +82,380 @@
     }
 
     .hud-pill {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      border-radius: 20px;
-      padding: 6px 14px;
+      background: rgba(10, 14, 30, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      border-radius: 99px;
+      padding: 7px 15px;
       color: #ffffff;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: 14px;
-      font-weight: 800;
+      font-weight: 700;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
     .target-tracker-pill {
       align-self: center;
-      background: rgba(255, 117, 140, 0.2);
-      border: 1px solid rgba(255, 117, 140, 0.4);
-      color: #ffd2dc;
-      border-radius: 14px;
-      padding: 4px 12px;
+      background: rgba(236, 72, 153, 0.12);
+      border: 1px solid rgba(236, 72, 153, 0.3);
+      color: #fbcfe8;
+      border-radius: 99px;
+      padding: 5px 14px;
       font-size: 12px;
-      font-weight: 800;
-      backdrop-filter: blur(10px);
+      font-weight: 700;
+      backdrop-filter: blur(12px);
       display: flex;
       align-items: center;
       gap: 6px;
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.2);
     }
 
     /* Screen Overlays */
     .screen-overlay {
       position: absolute;
       inset: 0;
-      background: radial-gradient(circle at center, rgba(15, 23, 42, 0.95), rgba(2, 6, 23, 0.98));
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      background: radial-gradient(circle at 50% 20%, rgba(20, 26, 56, 0.94) 0%, rgba(5, 7, 18, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
-      text-align: center;
-      padding: 20px;
+      justify-content: space-between;
+      padding: 30px 24px 28px;
       z-index: 10;
+      text-align: center;
+    }
+
+    /* Hero Preview & Podium */
+    .hero-podium {
+      position: relative;
+      width: 100%;
+      height: 125px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .hero-ball-preview {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      box-shadow: 0 0 25px var(--primary-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      position: relative;
+      animation: floatBall 2.6s ease-in-out infinite alternate;
+      z-index: 2;
+    }
+
+    .hero-pedestal-shadow {
+      position: absolute;
+      bottom: 22px;
+      width: 80px;
+      height: 14px;
+      background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.6) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: shadowPulse 2.6s ease-in-out infinite alternate;
+    }
+
+    @keyframes floatBall {
+      0% { transform: translateY(0px) scale(1); }
+      100% { transform: translateY(-16px) scale(1.02); }
+    }
+    @keyframes shadowPulse {
+      0% { transform: scale(1); opacity: 0.7; }
+      100% { transform: scale(0.65); opacity: 0.3; }
     }
 
     .title-banner {
-      font-size: 28px;
+      font-size: 32px;
       font-weight: 900;
-      letter-spacing: -1px;
+      letter-spacing: -0.8px;
       line-height: 1.1;
-      margin-bottom: 4px;
-      background: linear-gradient(135deg, #ffffff 0%, #feca57 50%, #ff7675 100%);
+      background: linear-gradient(135deg, #ffffff 10%, #e2e8f0 40%, #a5b4fc 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      filter: drop-shadow(0 6px 20px rgba(254, 202, 87, 0.4));
+      filter: drop-shadow(0 2px 10px rgba(165, 180, 252, 0.25));
     }
 
-    .action-btn {
-      background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
-      border: none;
-      color: white;
-      font-size: 16px;
-      font-weight: 800;
-      padding: 12px 36px;
-      border-radius: 28px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(168, 85, 247, 0.4);
-      transition: transform 0.15s ease;
-    }
-    .action-btn:active {
-      transform: scale(0.96);
-    }
-
-    .share-btn {
-      background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
-      border: none;
-      color: white;
+    .sub-banner {
       font-size: 13px;
+      color: #94a3b8;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* Leaderboard Glass Card */
+    .leaderboard-card {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .leaderboard-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    }
+
+    .leaderboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
       font-weight: 800;
-      padding: 10px 24px;
-      border-radius: 22px;
-      cursor: pointer;
-      margin-top: 10px;
-      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.35);
+      letter-spacing: 0.8px;
+      color: #cbd5e1;
+      margin-bottom: 10px;
+    }
+
+    .rank-row {
       display: flex;
       align-items: center;
-      gap: 6px;
+      justify-content: space-between;
+      padding: 10px 14px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #f1f5f9;
+      transition: all 0.25s ease;
     }
 
-    /* Toko 30 Skin Grid */
+    .rank-row.top-1 {
+      background: linear-gradient(90deg, rgba(245, 158, 11, 0.12) 0%, rgba(245, 158, 11, 0.03) 100%);
+      border-color: rgba(245, 158, 11, 0.3);
+      box-shadow: 0 0 20px rgba(245, 158, 11, 0.08);
+    }
+
+    .rank-score {
+      font-weight: 800;
+      font-size: 15px;
+      color: #f8fafc;
+      letter-spacing: -0.3px;
+    }
+
+    .top-1 .rank-score {
+      color: #fcd34d;
+      text-shadow: 0 0 10px rgba(252, 211, 77, 0.4);
+    }
+
+    /* Segmented Switcher Role */
+    .role-section {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .role-section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #64748b;
+      font-weight: 800;
+    }
+
+    .segmented-control {
+      display: flex;
+      background: rgba(10, 14, 30, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .role-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 9px 12px;
+      border-radius: 16px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #94a3b8;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .role-btn.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    }
+
+    .role-btn.active.p1 {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), rgba(99, 102, 241, 0.35));
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      color: #e0f2fe;
+    }
+
+    .role-btn.active.p2 {
+      background: linear-gradient(135deg, rgba(244, 114, 182, 0.25), rgba(236, 72, 153, 0.35));
+      border: 1px solid rgba(244, 114, 182, 0.4);
+      color: #fce7f3;
+    }
+
+    /* Actions Bottom */
+    .button-stack {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f1f5f9;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 12px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+
+    .btn-secondary:active {
+      transform: scale(0.98);
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .btn-primary {
+      position: relative;
+      width: 100%;
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #d946ef 100%);
+      border: none;
+      color: #ffffff;
+      font-size: 17px;
+      font-weight: 900;
+      padding: 16px 24px;
+      border-radius: 22px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 
+        0 12px 28px -5px rgba(139, 92, 246, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      overflow: hidden;
+      transition: all 0.2s;
+    }
+
+    .btn-primary::after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 40%;
+      height: 200%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+      transform: rotate(25deg);
+      animation: sweepLight 4s infinite ease-in-out;
+    }
+
+    @keyframes sweepLight {
+      0% { left: -70%; }
+      30%, 100% { left: 140%; }
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+      box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+    }
+
+    .btn-whatsapp {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      border: none;
+      color: #ffffff;
+      font-size: 14px;
+      font-weight: 800;
+      padding: 13px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 8px 22px -4px rgba(16, 185, 129, 0.4);
+    }
+
+    .btn-whatsapp:active {
+      transform: scale(0.98);
+    }
+
+    /* Modal Wardrobe */
     .wardrobe-modal {
       position: absolute;
       inset: 0;
-      background: rgba(10, 15, 29, 0.98);
+      background: rgba(7, 9, 19, 0.98);
       z-index: 20;
       display: flex;
       flex-direction: column;
-      padding: 20px 14px;
+      padding: 24px 20px 20px;
     }
 
     .wardrobe-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
-      padding: 0 6px;
+      margin-bottom: 16px;
+    }
+
+    .close-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .skins-scroll-area {
       flex: 1;
       overflow-y: auto;
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
       padding-bottom: 20px;
     }
 
     .skin-card {
       aspect-ratio: 1;
-      border-radius: 16px;
+      border-radius: 20px;
       cursor: pointer;
       border: 2px solid transparent;
       display: flex;
@@ -193,52 +464,27 @@
       justify-content: center;
       color: white;
       position: relative;
-      transition: all 0.2s;
+      transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
+
     .skin-card.selected {
       border-color: #ffffff;
-      transform: scale(1.08);
-      box-shadow: 0 0 14px rgba(255, 255, 255, 0.8);
+      transform: scale(1.05);
+      box-shadow: 0 0 16px rgba(255, 255, 255, 0.6);
     }
+
     .skin-card.locked {
-      opacity: 0.45;
+      opacity: 0.4;
       filter: grayscale(0.85);
     }
 
     .skin-cost-tag {
       font-size: 9px;
       font-weight: 900;
-      background: rgba(0, 0, 0, 0.65);
-      padding: 1px 5px;
-      border-radius: 6px;
-      margin-top: 2px;
-    }
-
-    /* Leaderboard Card */
-    .leaderboard-card {
-      width: 100%;
-      max-width: 350px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 20px;
-      padding: 10px 14px;
-      margin-bottom: 12px;
-    }
-    .rank-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 6px 10px;
-      background: rgba(255, 255, 255, 0.03);
-      border-radius: 12px;
-      margin-bottom: 4px;
-      font-size: 13px;
-      font-weight: 800;
-      color: #f1f5f9;
-    }
-    .rank-row.top-1 {
-      border: 1px solid rgba(254, 202, 87, 0.4);
-      background: rgba(254, 202, 87, 0.08);
+      background: rgba(0, 0, 0, 0.7);
+      padding: 2px 6px;
+      border-radius: 8px;
+      margin-top: 3px;
     }
 
     .hide { display: none !important; }
@@ -253,12 +499,12 @@
     <div class="hud-layer">
       <div class="hud-top-row">
         <div class="hud-pill">
-          <span id="hudPlayerBadge" style="color: #ff7675;">👑 Aku</span>
-          <span id="hudAltitude" style="margin-left:4px; font-size:16px; background: linear-gradient(135deg, #fff, #a5b4fc); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">0 m</span>
+          <span id="hudPlayerBadge" style="color: #38bdf8;">👑 Aku</span>
+          <span id="hudAltitude" style="margin-left:4px; font-size:16px; background: linear-gradient(135deg, #fff, #c7d2fe); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">0 m</span>
         </div>
-        <div class="hud-pill" style="border-color: rgba(254, 202, 87, 0.3);">
+        <div class="hud-pill" style="border-color: rgba(245, 158, 11, 0.35);">
           <span style="font-size: 15px;">⭐</span>
-          <span id="hudStars" style="color: #feca57;">0</span>
+          <span id="hudStars" style="color: #fbbf24;">0</span>
         </div>
       </div>
 
@@ -267,77 +513,100 @@
       </div>
     </div>
 
-    <!-- START SCREEN -->
+    <!-- START SCREEN (PROFESSIONAL HERO UI) -->
     <div id="screenStart" class="screen-overlay">
-      <div style="font-size: 32px; margin-bottom: 2px;">❤️🏀❤️</div>
-      <h1 class="title-banner">SUPER BOUNCE</h1>
-      <p style="color: #94a3b8; font-size: 12px; margin-bottom: 10px;">30 Skin Koleksi & Sistem Simpan Otomatis!</p>
+      <!-- Top Title Area -->
+      <div>
+        <h1 class="title-banner">SUPER BOUNCE</h1>
+        <p class="sub-banner">Couple Realtime Climber</p>
+      </div>
+
+      <!-- Hero Ball 3D Floating Pedestal -->
+      <div class="hero-podium">
+        <div id="heroBallPreview" class="hero-ball-preview">🌸</div>
+        <div class="hero-pedestal-shadow"></div>
+      </div>
 
       <!-- Leaderboard Card -->
       <div class="leaderboard-card">
-        <div style="display:flex; justify-content:space-between; font-size:11px; font-weight:800; color:#feca57; margin-bottom:6px;">
-          <span>🏆 REKOR PASANGAN</span>
-          <span style="color:#22c55e;">🟢 AUTO-SAVE</span>
+        <div class="leaderboard-header">
+          <span>🏆 PAPAN SKOR PASANGAN</span>
+          <span style="color: #10b981; display:flex; align-items:center; gap:5px;">
+            <span style="width:6px; height:6px; background:#10b981; border-radius:50%;"></span> SYNCED
+          </span>
         </div>
         <div id="rankList"></div>
       </div>
 
-      <!-- Pilih Profil HP -->
-      <div style="font-size: 11px; color: #cbd5e1; font-weight: 800; margin-bottom: 4px;">HP INI MILIK:</div>
-      <div style="display:flex; gap:10px; margin-bottom: 12px;">
-        <button id="btnRoleP1" class="action-btn" style="padding:6px 16px; font-size:12px;" onclick="setMyRole('p1')">👑 Aku</button>
-        <button id="btnRoleP2" class="action-btn" style="padding:6px 16px; font-size:12px; opacity:0.5;" onclick="setMyRole('p2')">💖 Pacarku</button>
+      <!-- Role Selector -->
+      <div class="role-section">
+        <div class="role-section-label">Pilih Karakter Pemain</div>
+        <div class="segmented-control">
+          <button id="btnRoleP1" class="role-btn active p1" onclick="setMyRole('p1')">
+            <span>👑</span> Aku
+          </button>
+          <button id="btnRoleP2" class="role-btn p2" onclick="setMyRole('p2')">
+            <span>💖</span> Pacarku
+          </button>
+        </div>
       </div>
 
-      <!-- Tombol Toko Lemari Skin -->
-      <button class="action-btn" style="background:linear-gradient(135deg,#f59e0b,#ea580c); padding:8px 24px; font-size:13px; margin-bottom:12px;" onclick="openWardrobe()">
-        👗 Lemari 30 Skin (<span id="btnSkinCountText">1/30</span>)
-      </button>
-
-      <button id="btnStart" class="action-btn">Mulai Meluncur 🚀</button>
+      <!-- Action Buttons -->
+      <div class="button-stack">
+        <button class="btn-secondary" onclick="openWardrobe()">
+          <span>👗</span> Lemari 30 Skin (<span id="btnSkinCountText">1/30</span>)
+        </button>
+        <button id="btnStart" class="btn-primary">
+          Mulai Meluncur 🚀
+        </button>
+      </div>
     </div>
 
-    <!-- MODAL TOKO 30 SKIN -->
+    <!-- MODAL WARDROBE -->
     <div id="modalWardrobe" class="wardrobe-modal hide">
       <div class="wardrobe-header">
         <div>
-          <h2 style="font-size: 18px; color: #fff;">LEMARI SKIN BOLA</h2>
-          <span style="font-size: 12px; color: #feca57; font-weight:800;">⭐ Saldo Tersimpan: <span id="wardrobeStarBalance">0</span></span>
+          <h2 style="font-size: 19px; color: #fff; font-weight:800;">LEMARI SKIN BOLA</h2>
+          <span style="font-size: 12px; color: #f59e0b; font-weight:700;">⭐ Saldo: <span id="wardrobeStarBalance">0</span></span>
         </div>
-        <button onclick="closeWardrobe()" style="background:#ef4444; border:none; color:#fff; border-radius:50%; width:30px; height:30px; font-weight:900; cursor:pointer;">✕</button>
+        <button class="close-btn" onclick="closeWardrobe()">✕</button>
       </div>
       <div class="skins-scroll-area" id="skinsGrid"></div>
     </div>
 
     <!-- GAME OVER SCREEN -->
     <div id="screenGameOver" class="screen-overlay hide">
-      <div style="font-size: 36px; margin-bottom: 4px;">🌠</div>
-      <h1 class="title-banner" style="background: linear-gradient(135deg, #ff7675, #fab1a0); -webkit-background-clip: text;">RONDE SELESAI</h1>
-      
-      <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-bottom: 6px;">
-        Ketinggian: 0 m
-      </p>
+      <div>
+        <div style="font-size: 40px; margin-bottom: 2px;">🌠</div>
+        <h1 class="title-banner" style="background: linear-gradient(135deg, #f87171, #fb923c); -webkit-background-clip: text;">RONDE SELESAI</h1>
+        <p id="statsText" style="color: #cbd5e1; font-size: 14px; margin-top: 4px;">Ketinggian: 0 m</p>
+      </div>
 
-      <div id="gapBadge" style="background:rgba(255,255,255,0.08); border-radius:12px; padding:6px 12px; font-size:12px; font-weight:800; color:#cbd5e1; margin-bottom:10px;">Memeriksa rekor...</div>
+      <div id="gapBadge" style="background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:8px 14px; font-size:12px; font-weight:700; color:#cbd5e1;">
+        Memeriksa rekor...
+      </div>
 
       <div class="leaderboard-card">
         <div id="rankListGameOver"></div>
       </div>
 
-      <button class="share-btn" onclick="shareScoreToPartner()">
-        <span>📤 Kirim Skor ke WA Pacar</span>
-      </button>
-
-      <button id="btnRestart" class="action-btn" style="margin-top: 10px;">Lompat Lagi 🔁</button>
+      <div class="button-stack">
+        <button class="btn-whatsapp" onclick="shareScoreToPartner()">
+          <span>📤</span> Kirim Skor ke WA Pacar
+        </button>
+        <button id="btnRestart" class="btn-primary">
+          Lompat Lagi 🔁
+        </button>
+      </div>
     </div>
   </div>
 
   <script>
-    /* ================= HD CANVAS ================= */
+    /* ================= HD CANVAS SETUP ================= */
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
     const LOGICAL_WIDTH = 430;
-    const LOGICAL_HEIGHT = 740;
+    const LOGICAL_HEIGHT = 760;
 
     function resizeCanvasHD() {
       const dpr = Math.min(window.devicePixelRatio || 1, 2.5);
@@ -347,7 +616,7 @@
     }
     resizeCanvasHD();
 
-    /* ================= 30 SKIN BOLA EKSKLUSIF ================= */
+    /* ================= 30 SKIN BOLA ================= */
     const SKINS_DATABASE = [
       { id: 'classic', name: 'Cherry', symbol: '🌸', c1: '#fbcfe8', c2: '#f472b6', c3: '#db2777', aura: '#f472b6', sfx: 'pop', bgm: 'happy', cost: 0 },
       { id: 'blueberry', name: 'Berry', symbol: '🫐', c1: '#bfdbfe', c2: '#60a5fa', c3: '#2563eb', aura: '#3b82f6', sfx: 'water', bgm: 'chill', cost: 25 },
@@ -381,12 +650,11 @@
       { id: 'stellar', name: 'Ascended', symbol: '✨', c1: '#ffffff', c2: '#e0e7ff', c3: '#fde047', aura: '#facc15', sfx: 'cosmic', bgm: 'cosmic', cost: 2000 }
     ];
 
-    /* ================= BRANKAS PENYIMPANAN PERMANEN (AUTO-SAVE) ================= */
+    /* ================= STORAGE AUTO-SAVE ================= */
     let totalStarsStored = parseInt(localStorage.getItem('bounce_star_bank_permanent') || '0');
     let currentSkinId = localStorage.getItem('bounce_equipped_skin_permanent') || 'classic';
     let unlockedSkins = JSON.parse(localStorage.getItem('bounce_unlocked_list_permanent') || '["classic"]');
 
-    // Fungsi otomatis simpan ke memori HP detik itu juga
     function saveStarsPermanently() {
       localStorage.setItem('bounce_star_bank_permanent', totalStarsStored.toString());
     }
@@ -401,6 +669,13 @@
       document.getElementById('hudStars').innerText = totalStarsStored;
       document.getElementById('btnSkinCountText').innerText = `${unlockedSkins.length}/30`;
 
+      // Update Hero Preview di Menu Utama
+      const curSkin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
+      const preview = document.getElementById('heroBallPreview');
+      preview.innerText = curSkin.symbol;
+      preview.style.background = `linear-gradient(135deg, ${curSkin.c1}, ${curSkin.c3})`;
+      preview.style.boxShadow = `0 0 25px ${curSkin.aura}88`;
+
       const grid = document.getElementById('skinsGrid');
       grid.innerHTML = '';
 
@@ -412,7 +687,7 @@
         card.style.background = `linear-gradient(135deg, ${s.c1}, ${s.c3})`;
 
         card.innerHTML = `
-          <span style="font-size: 16px;">${s.symbol}</span>
+          <span style="font-size: 20px;">${s.symbol}</span>
           ${!isUnlocked ? `<span class="skin-cost-tag">⭐${s.cost}</span>` : ''}
         `;
 
@@ -444,7 +719,7 @@
       document.getElementById('modalWardrobe').classList.add('hide');
     }
 
-    /* ================= SYNTHESIZER AUDIO DENGAN VARIASI TIAP SKIN ================= */
+    /* ================= SYNTHESIZER AUDIO ================= */
     let audioCtx = null;
     let bgmTimer = null;
 
@@ -602,7 +877,7 @@
       }
     };
 
-    /* ================= SINKRONISASI PASANGAN ================= */
+    /* ================= COUPLE SYSTEM ================= */
     let myRole = localStorage.getItem('bounce_my_role_v3') || 'p1';
     let coupleScores = JSON.parse(localStorage.getItem('couple_scores_v3') || JSON.stringify({
       p1: { name: 'Aku', avatar: '👑', score: 0 },
@@ -624,8 +899,8 @@
     function setMyRole(role) {
       myRole = role;
       localStorage.setItem('bounce_my_role_v3', role);
-      document.getElementById('btnRoleP1').style.opacity = role === 'p1' ? '1' : '0.5';
-      document.getElementById('btnRoleP2').style.opacity = role === 'p2' ? '1' : '0.5';
+      document.getElementById('btnRoleP1').classList.toggle('active', role === 'p1');
+      document.getElementById('btnRoleP2').classList.toggle('active', role === 'p2');
       updateLeaderboardUI();
     }
 
@@ -647,9 +922,9 @@
             <div style="display:flex; align-items:center; gap:8px;">
               <span>${idx === 0 ? '🥇' : '🥈'}</span>
               <span>${p.avatar}</span>
-              <span>${p.name} ${isMe ? '<span style="font-size:10px;color:#38bdf8;">(Kamu)</span>' : ''}</span>
+              <span>${p.name} ${isMe ? '<span style="font-size:11px;color:#38bdf8;font-weight:800;">(Kamu)</span>' : ''}</span>
             </div>
-            <div style="color:${isWinner ? '#feca57' : '#94a3b8'};">
+            <div class="rank-score">
               ${p.score} m
             </div>
           `;
@@ -660,6 +935,7 @@
       renderRows('rankList');
       renderRows('rankListGameOver');
       document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
+      document.getElementById('hudPlayerBadge').style.color = myRole === 'p1' ? '#38bdf8' : '#f472b6';
     }
 
     function shareScoreToPartner() {
@@ -774,7 +1050,6 @@
 
       document.getElementById('hudAltitude').innerText = '0 m';
       document.getElementById('hudStars').innerText = totalStarsStored;
-      document.getElementById('hudPlayerBadge').innerText = `${coupleScores[myRole].avatar} ${coupleScores[myRole].name}`;
 
       const partnerKey = myRole === 'p1' ? 'p2' : 'p1';
       const partner = coupleScores[partnerKey];
@@ -802,7 +1077,6 @@
       isPlaying = false;
       SoundEngine.fall();
 
-      // SIMPAN PERMANEN DETIK INI JUGA!
       saveStarsPermanently();
 
       const finalAlt = Math.floor(altitude);
@@ -818,20 +1092,19 @@
       const gapBadge = document.getElementById('gapBadge');
 
       if (partner.score === 0) {
-        gapBadge.innerHTML = `Pacarmu belum pasang rekor. Kamu yang pertama! 🚀`;
+        gapBadge.innerHTML = `Pacarmu belum pasang rekor. Jadilah pelopor pertama! 🚀`;
       } else if (finalAlt > partner.score) {
         gapBadge.innerHTML = `🎉 <b>Kamu Memimpin!</b> Unggul <b>+${finalAlt - partner.score}m</b> dari ${partner.name}!`;
-        gapBadge.style.color = "#feca57";
+        gapBadge.style.color = "#fcd34d";
       } else {
         gapBadge.innerHTML = `⚡ Tertinggal <b>-${partner.score - finalAlt}m</b> di bawah rekor ${partner.name}.`;
-        gapBadge.style.color = "#ff7675";
+        gapBadge.style.color = "#f87171";
       }
 
       document.getElementById('statsText').innerHTML = `
-        Ketinggian Kamu: <span style="color:#fff;font-weight:800;">${finalAlt} m</span><br>
-        Bintang Didapat Sesi Ini: <span style="color:#feca57;font-weight:800;">+${sessionStars} ⭐</span><br>
-        Total Bank Bintang: <span style="color:#feca57;font-weight:800;">${totalStarsStored} ⭐ (Tersimpan Permanen)</span>
-        ${isNew ? '<br><span style="color:#feca57;font-weight:900;">🎉 REKOR BARU TERCATAT! 🎉</span>' : ''}
+        Ketinggian Kamu: <span style="color:#fff;font-weight:800;">${finalAlt} m</span> &bull; 
+        Bintang: <span style="color:#fcd34d;font-weight:800;">+${sessionStars} ⭐</span>
+        ${isNew ? '<br><span style="color:#fcd34d;font-weight:900;">🎉 REKOR BARU TERCATAT! 🎉</span>' : ''}
       `;
 
       updateLeaderboardUI();
@@ -861,7 +1134,6 @@
         ball.vy += currentGravity;
       }
 
-      // Magnet
       if (ball.magnetTimer > 0) {
         ball.magnetTimer--;
         platforms.forEach(p => {
@@ -872,7 +1144,7 @@
               p.hasStar = false;
               sessionStars++;
               totalStarsStored++;
-              saveStarsPermanently(); // AUTO-SAVE DETIK ITU JUGA
+              saveStarsPermanently();
               SoundEngine.star();
               document.getElementById('hudStars').innerText = totalStarsStored;
               addFloatingText('+1', starX, starY, '#feca57');
@@ -936,7 +1208,7 @@
             p.hasStar = false;
             sessionStars++;
             totalStarsStored++;
-            saveStarsPermanently(); // AUTO-SAVE DETIK ITU JUGA KE HP
+            saveStarsPermanently();
             SoundEngine.star();
             document.getElementById('hudStars').innerText = totalStarsStored;
             addFloatingText('+1 ⭐', starX, starY, '#feca57');
@@ -987,7 +1259,6 @@
       });
       floatTexts = floatTexts.filter(ft => ft.alpha > 0);
 
-      // Fitur Penyelamat
       if (ball.y + ball.radius >= LOGICAL_HEIGHT - 6 && hasShield) {
         hasShield = false;
         ball.vy = currentBounce * 1.6;
@@ -1004,11 +1275,11 @@
     }
 
     function draw() {
-      ctx.fillStyle = '#0f172a';
+      ctx.fillStyle = '#070913';
       ctx.fillRect(0, 0, LOGICAL_WIDTH, LOGICAL_HEIGHT);
 
       bgStars.forEach(s => {
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
         ctx.fillRect(s.x, (s.y + cameraY * 0.15) % LOGICAL_HEIGHT, s.size, s.size);
       });
 
@@ -1019,9 +1290,9 @@
         const partnerScreenY = (LOGICAL_HEIGHT * 0.42) + (altitude * 10) - (partner.score * 10);
         if (partnerScreenY > -30 && partnerScreenY < LOGICAL_HEIGHT + 30) {
           ctx.save();
-          ctx.strokeStyle = '#ff758c';
+          ctx.strokeStyle = '#ec4899';
           ctx.lineWidth = 2.5;
-          ctx.shadowColor = '#ff758c';
+          ctx.shadowColor = '#ec4899';
           ctx.shadowBlur = 10;
           ctx.setLineDash([8, 6]);
           ctx.beginPath();
@@ -1029,15 +1300,14 @@
           ctx.lineTo(LOGICAL_WIDTH, partnerScreenY);
           ctx.stroke();
 
-          ctx.fillStyle = '#ff758c';
-          ctx.font = '800 13px Plus Jakarta Sans';
+          ctx.fillStyle = '#f472b6';
+          ctx.font = '800 13px Outfit';
           ctx.textAlign = 'right';
           ctx.fillText(`${partner.avatar} Rekor ${partner.name}: ${partner.score}m`, LOGICAL_WIDTH - 15, partnerScreenY - 6);
           ctx.restore();
         }
       }
 
-      // Jaring Penyelamat
       if (hasSafetyNet) {
         ctx.save();
         ctx.strokeStyle = '#38bdf8';
@@ -1059,7 +1329,7 @@
         ctx.fill();
 
         if (p.hasSpring) {
-          ctx.fillStyle = '#feca57';
+          ctx.fillStyle = '#f59e0b';
           ctx.fillRect(p.x + p.w / 2 - 12, p.y - 8, 24, 8);
         }
         if (p.hasRocket) {
@@ -1080,7 +1350,6 @@
         }
       });
 
-      // Trail
       ball.trail.forEach(t => {
         ctx.save();
         ctx.fillStyle = t.color;
@@ -1091,11 +1360,10 @@
         ctx.restore();
       });
 
-      // Floating Texts
       floatTexts.forEach(ft => {
         ctx.save();
         ctx.globalAlpha = ft.alpha;
-        ctx.font = '900 16px Plus Jakarta Sans';
+        ctx.font = '900 16px Outfit';
         ctx.fillStyle = ft.color;
         ctx.shadowColor = ft.color;
         ctx.shadowBlur = 10;
@@ -1104,7 +1372,6 @@
         ctx.restore();
       });
 
-      // Gambar Bola Sesuai Skin
       const skin = SKINS_DATABASE.find(s => s.id === currentSkinId) || SKINS_DATABASE[0];
 
       ctx.save();
@@ -1132,13 +1399,11 @@
       ctx.arc(0, 0, ball.radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Simbol Skin di atas bola
       ctx.shadowBlur = 0;
       ctx.font = '12px sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(skin.symbol, 0, -ball.radius + 2);
 
-      // Mata Bola
       ctx.fillStyle = '#fff';
       ctx.beginPath();
       ctx.arc(-5, -2, 4, 0, Math.PI * 2);
